@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-UnrealMeasurementTool.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Intermediate/Build/Win64/x64/MeasurementPluginEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/Module.UnrealMeasurementTool.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementActor.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementTextWidget.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementTxtWgtCommunicationInterface.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/UnrealMeasurementTool.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/Default.rc2.res"
+/OUT:"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/UnrealEditor-UnrealMeasurementTool.lib"
