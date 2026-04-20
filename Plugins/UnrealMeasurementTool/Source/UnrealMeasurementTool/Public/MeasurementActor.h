@@ -32,6 +32,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual bool ShouldTickIfViewportsOnly() const override { return true; }
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+#endif
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
 	TObjectPtr<USplineComponent> SplineComponent;
@@ -40,15 +44,15 @@ protected:
 	TObjectPtr<UWidgetComponent> WidgetComponent;
 
 	/** Resets the spline to its default state (2 points), clears rotation and scale. */
-	UFUNCTION(CallInEditor, Category = "Measurement", meta = (DisplayName = "Reset"))
+	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Reset"))
 	void ResetSpline();
 
 	/** Size in meters to apply when Submit is pressed. */
-	UPROPERTY(EditAnywhere, Category = "Measurement|Set Size Manually", meta = (DisplayName = "Size (meters)", ClampMin = "0.01"))
+	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size (meters)", ClampMin = "0.01"))
 	float ManualSizeMeters = 1.0f;
 
 	/** Rescales the spline so its total length matches ManualSizeMeters. */
-	UFUNCTION(CallInEditor, Category = "Measurement|Set Size Manually", meta = (DisplayName = "Submit"))
+	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))
 	void ApplyManualSize();
 
 private:

@@ -50,6 +50,18 @@ void AMeasurementActor::FaceWidgetToCamera()
     WidgetComponent->SetWorldRotation(Direction.Rotation());
 }
 
+#if WITH_EDITOR
+void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSizeMeters))
+    {
+        ApplyManualSize();
+    }
+}
+#endif
+
 void AMeasurementActor::ResetSpline()
 {
     if (!SplineComponent)
@@ -87,10 +99,16 @@ void AMeasurementActor::ApplyManualSize()
     const float ScaleFactor = DesiredLengthCm / CurrentLength;
     const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
 
+    SplineComponent->Modify();
+
     for (int32 i = 0; i < NumPoints; ++i)
     {
         FVector Location = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
         SplineComponent->SetLocationAtSplinePoint(i, Location * ScaleFactor, ESplineCoordinateSpace::Local, false);
+
+        FVector ArriveTangent = SplineComponent->GetArriveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+        FVector LeaveTangent = SplineComponent->GetLeaveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+        SplineComponent->SetTangentsAtSplinePoint(i, ArriveTangent * ScaleFactor, LeaveTangent * ScaleFactor, ESplineCoordinateSpace::Local, false);
     }
 
     SplineComponent->UpdateSpline();
