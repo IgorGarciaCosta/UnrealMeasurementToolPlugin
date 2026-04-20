@@ -52,9 +52,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Unit"))
 	EMeasurementUnit DisplayUnit = EMeasurementUnit::Meters;
 
-	/** Size in meters to apply when Submit is pressed. */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size (meters)", ClampMin = "0.01"))
-	float ManualSizeMeters = 1.0f;
+	/** Size (in the currently selected unit) to apply when Submit is pressed. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size", ClampMin = "0.01"))
+	float ManualSize = 1.0f;
 
 	/** Rescales the spline so its total length matches ManualSizeMeters. */
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))

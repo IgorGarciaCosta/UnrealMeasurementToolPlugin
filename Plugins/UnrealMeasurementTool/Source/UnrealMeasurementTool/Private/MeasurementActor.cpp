@@ -57,7 +57,7 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
 
     const FName PropName = PropertyChangedEvent.GetPropertyName();
 
-    if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSizeMeters))
+    if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSize))
     {
         ApplyManualSize();
     }
@@ -94,7 +94,29 @@ void AMeasurementActor::ApplyManualSize()
         return;
     }
 
-    const float DesiredLengthCm = ManualSizeMeters * 100.0f;
+    float DesiredLengthCm = 0.0f;
+    switch (DisplayUnit)
+    {
+    case EMeasurementUnit::Centimeters:
+        DesiredLengthCm = ManualSize;
+        break;
+    case EMeasurementUnit::Meters:
+        DesiredLengthCm = ManualSize * 100.0f;
+        break;
+    case EMeasurementUnit::Kilometers:
+        DesiredLengthCm = ManualSize * 100000.0f;
+        break;
+    case EMeasurementUnit::Feet:
+        DesiredLengthCm = ManualSize * 30.48f;
+        break;
+    case EMeasurementUnit::Inches:
+        DesiredLengthCm = ManualSize * 2.54f;
+        break;
+    case EMeasurementUnit::Yards:
+        DesiredLengthCm = ManualSize * 91.44f;
+        break;
+    }
+
     const float CurrentLength = SplineComponent->GetSplineLength();
 
     if (CurrentLength <= KINDA_SMALL_NUMBER)

@@ -173,16 +173,16 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ToolTip", "Unit used for the measurement display." },
 #endif
 	};
-	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ManualSizeMeters_MetaData[] = {
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ManualSize_MetaData[] = {
 		{ "Category", "Measurement Control" },
 		{ "ClampMin", "0.01" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Size in meters to apply when Submit is pressed. */" },
+		{ "Comment", "/** Size (in the currently selected unit) to apply when Submit is pressed. */" },
 #endif
-		{ "DisplayName", "Size (meters)" },
+		{ "DisplayName", "Size" },
 		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Size in meters to apply when Submit is pressed." },
+		{ "ToolTip", "Size (in the currently selected unit) to apply when Submit is pressed." },
 #endif
 	};
 #endif // WITH_METADATA
@@ -192,7 +192,7 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_WidgetComponent;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_DisplayUnit_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_DisplayUnit;
-	static const UECodeGen_Private::FFloatPropertyParams NewProp_ManualSizeMeters;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_ManualSize;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class AMeasurementActor constinit property declarations **************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -216,13 +216,13 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementAc
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent = { "WidgetComponent", nullptr, (EPropertyFlags)0x01240800000a001d, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, WidgetComponent), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_WidgetComponent_MetaData), NewProp_WidgetComponent_MetaData) };
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit = { "DisplayUnit", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, DisplayUnit), Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementUnit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_DisplayUnit_MetaData), NewProp_DisplayUnit_MetaData) }; // 4084313674
-const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSizeMeters = { "ManualSizeMeters", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, ManualSizeMeters), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ManualSizeMeters_MetaData), NewProp_ManualSizeMeters_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize = { "ManualSize", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, ManualSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ManualSize_MetaData), NewProp_ManualSize_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurementActor_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SplineComponent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit,
-	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSizeMeters,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AMeasurementActor_Statics::PropPointers) < 2048);
 // ********** End Class AMeasurementActor Property Definitions *************************************
@@ -267,10 +267,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 4288444540U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 4035796483U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_1121896946{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_2281905975{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,
