@@ -3,6 +3,7 @@
 #include "MeasurementActor.h"
 #include "Components/SplineComponent.h"
 #include "Components/WidgetComponent.h"
+#include "DrawDebugHelpers.h"
 #include "MeasurementTxtWgtCommunicationInterface.h"
 
 AMeasurementActor::AMeasurementActor()
@@ -30,6 +31,7 @@ void AMeasurementActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     FaceWidgetToCamera();
+    DrawSnapRadiusDebug();
 }
 
 void AMeasurementActor::FaceWidgetToCamera()
@@ -296,4 +298,25 @@ bool AMeasurementActor::FindNearestSurface(UWorld *World, const FVector &Origin,
     }
 
     return bFoundAny;
+}
+
+void AMeasurementActor::DrawSnapRadiusDebug() const
+{
+    if (!bShowSnapRadius || SnapMode != ESnapMode::SurfaceSnap || !SplineComponent)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        const FVector WorldPt = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
+        DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, false, -1.0f, SDPG_World, 1.0f);
+    }
 }

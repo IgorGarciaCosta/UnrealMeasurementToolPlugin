@@ -81,6 +81,11 @@ protected:
 			  meta = (EditCondition = "SnapMode != ESnapMode::None"))
 	TEnumAsByte<ECollisionChannel> SnapTraceChannel = ECC_WorldStatic;
 
+	/** Show debug spheres to visualize SnapRadius around each spline point. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (EditCondition = "SnapMode == ESnapMode::SurfaceSnap", DisplayName = "Show Snap Radius"))
+	bool bShowSnapRadius = false;
+
 private:
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
@@ -95,4 +100,7 @@ private:
 	bool FindNearestSurface(UWorld *World, const FVector &Origin, float Radius,
 							ECollisionChannel Channel, const FCollisionQueryParams &Params,
 							FHitResult &OutHit) const;
+
+	/** Draws debug spheres around each spline point to visualize SnapRadius. */
+	void DrawSnapRadiusDebug() const;
 };
