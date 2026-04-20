@@ -15,3 +15,11 @@ enum class EMeasurementUnit : uint8
     Inches UMETA(DisplayName = "in"),
     Yards UMETA(DisplayName = "yd")
 };
+
+UENUM(BlueprintType)
+enum class ESnapMode : uint8
+{
+    None UMETA(DisplayName = "Off"),
+    GroundSnap UMETA(DisplayName = "Ground (Trace Down)"),
+    SurfaceSnap UMETA(DisplayName = "Nearest Surface"),
+};

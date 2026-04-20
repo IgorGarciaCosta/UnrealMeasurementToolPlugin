@@ -60,10 +60,39 @@ protected:
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))
 	void ApplyManualSize();
 
+	// --- Snap Settings ---
+
+	/** How spline points should snap to geometry. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control")
+	ESnapMode SnapMode = ESnapMode::None;
+
+	/** Maximum distance to search for surfaces (SurfaceSnap only). */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (EditCondition = "SnapMode == ESnapMode::SurfaceSnap", ClampMin = "1.0"))
+	float SnapRadius = 50.0f;
+
+	/** Maximum downward trace distance (GroundSnap only). */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (EditCondition = "SnapMode == ESnapMode::GroundSnap", ClampMin = "1.0"))
+	float GroundTraceDistance = 10000.0f;
+
+	/** Collision channel used for snap traces. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (EditCondition = "SnapMode != ESnapMode::None"))
+	TEnumAsByte<ECollisionChannel> SnapTraceChannel = ECC_WorldStatic;
+
 private:
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
 
 	/** Rotates the widget to always face the camera (billboard). */
 	void FaceWidgetToCamera();
+
+	/** Snaps all spline points to geometry based on SnapMode. */
+	void SnapSplinePoints();
+
+	/** Finds the nearest surface hit within a sphere around Origin using cardinal-direction traces. */
+	bool FindNearestSurface(UWorld *World, const FVector &Origin, float Radius,
+							ECollisionChannel Channel, const FCollisionQueryParams &Params,
+							FHitResult &OutHit) const;
 };

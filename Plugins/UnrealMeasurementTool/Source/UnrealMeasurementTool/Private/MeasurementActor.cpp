@@ -22,6 +22,7 @@ AMeasurementActor::AMeasurementActor()
 void AMeasurementActor::OnConstruction(const FTransform &Transform)
 {
     Super::OnConstruction(Transform);
+    SnapSplinePoints();
     UpdateMeasurementText();
 }
 
@@ -63,6 +64,11 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
     {
+        UpdateMeasurementText();
+    }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapMode) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapRadius) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, GroundTraceDistance) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapTraceChannel))
+    {
+        SnapSplinePoints();
         UpdateMeasurementText();
     }
 }
@@ -204,4 +210,90 @@ void AMeasurementActor::UpdateMeasurementText()
         FText::FromString(UnitSuffix));
 
     IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementText(Widget, FormattedText);
+}
+
+void AMeasurementActor::SnapSplinePoints()
+{
+    if (SnapMode == ESnapMode::None || !SplineComponent)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    if (NumPoints == 0)
+    {
+        return;
+    }
+
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+
+    SplineComponent->Modify();
+
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        FVector WorldPt = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
+        FHitResult Hit;
+        bool bHit = false;
+
+        if (SnapMode == ESnapMode::GroundSnap)
+        {
+            const FVector TraceEnd = WorldPt - FVector(0.0f, 0.0f, GroundTraceDistance);
+            bHit = World->LineTraceSingleByChannel(Hit, WorldPt, TraceEnd, SnapTraceChannel, QueryParams);
+        }
+        else if (SnapMode == ESnapMode::SurfaceSnap)
+        {
+            bHit = FindNearestSurface(World, WorldPt, SnapRadius, SnapTraceChannel, QueryParams, Hit);
+        }
+
+        if (bHit)
+        {
+            const FVector LocalHit = SplineComponent->GetComponentTransform().InverseTransformPosition(Hit.ImpactPoint);
+            SplineComponent->SetLocationAtSplinePoint(i, LocalHit, ESplineCoordinateSpace::Local, false);
+        }
+    }
+
+    SplineComponent->UpdateSpline();
+}
+
+bool AMeasurementActor::FindNearestSurface(UWorld *World, const FVector &Origin, float Radius,
+                                           ECollisionChannel Channel, const FCollisionQueryParams &Params,
+                                           FHitResult &OutHit) const
+{
+    static const FVector Directions[] = {
+        FVector::ForwardVector,
+        -FVector::ForwardVector,
+        FVector::RightVector,
+        -FVector::RightVector,
+        FVector::UpVector,
+        -FVector::UpVector,
+    };
+
+    bool bFoundAny = false;
+    float BestDistSq = MAX_FLT;
+
+    for (const FVector &Dir : Directions)
+    {
+        FHitResult Hit;
+        const FVector TraceEnd = Origin + Dir * Radius;
+
+        if (World->LineTraceSingleByChannel(Hit, Origin, TraceEnd, Channel, Params))
+        {
+            const float DistSq = FVector::DistSquared(Origin, Hit.ImpactPoint);
+            if (DistSq < BestDistSq)
+            {
+                BestDistSq = DistSq;
+                OutHit = Hit;
+                bFoundAny = true;
+            }
+        }
+    }
+
+    return bFoundAny;
 }
