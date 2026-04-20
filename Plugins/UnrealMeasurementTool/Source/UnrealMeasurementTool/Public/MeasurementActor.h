@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "MeasurementUnit.h"
 #include "MeasurementActor.generated.h"
 
 class USplineComponent;
@@ -46,6 +47,10 @@ protected:
 	/** Resets the spline to its default state (2 points), clears rotation and scale. */
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Reset"))
 	void ResetSpline();
+
+	/** Unit used for the measurement display. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Unit"))
+	EMeasurementUnit DisplayUnit = EMeasurementUnit::Meters;
 
 	/** Size in meters to apply when Submit is pressed. */
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size (meters)", ClampMin = "0.01"))

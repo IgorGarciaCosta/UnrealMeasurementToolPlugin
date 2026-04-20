@@ -55,9 +55,15 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
-    if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSizeMeters))
+    const FName PropName = PropertyChangedEvent.GetPropertyName();
+
+    if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSizeMeters))
     {
         ApplyManualSize();
+    }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
+    {
+        UpdateMeasurementText();
     }
 }
 #endif
@@ -134,15 +140,46 @@ void AMeasurementActor::UpdateMeasurementText()
     }
 
     const float SplineLengthCm = SplineComponent->GetSplineLength();
-    const float SplineLengthM = SplineLengthCm / 100.0f;
+
+    float DisplayValue = 0.0f;
+    FString UnitSuffix;
+
+    switch (DisplayUnit)
+    {
+    case EMeasurementUnit::Centimeters:
+        DisplayValue = SplineLengthCm;
+        UnitSuffix = TEXT("cm");
+        break;
+    case EMeasurementUnit::Meters:
+        DisplayValue = SplineLengthCm / 100.0f;
+        UnitSuffix = TEXT("m");
+        break;
+    case EMeasurementUnit::Kilometers:
+        DisplayValue = SplineLengthCm / 100000.0f;
+        UnitSuffix = TEXT("km");
+        break;
+    case EMeasurementUnit::Feet:
+        DisplayValue = SplineLengthCm / 30.48f;
+        UnitSuffix = TEXT("ft");
+        break;
+    case EMeasurementUnit::Inches:
+        DisplayValue = SplineLengthCm / 2.54f;
+        UnitSuffix = TEXT("in");
+        break;
+    case EMeasurementUnit::Yards:
+        DisplayValue = SplineLengthCm / 91.44f;
+        UnitSuffix = TEXT("yd");
+        break;
+    }
 
     FNumberFormattingOptions NumberFormat;
     NumberFormat.MinimumFractionalDigits = 2;
     NumberFormat.MaximumFractionalDigits = 2;
 
     const FText FormattedText = FText::Format(
-        NSLOCTEXT("MeasurementActor", "MeasurementFmt", "{0} m"),
-        FText::AsNumber(SplineLengthM, &NumberFormat));
+        NSLOCTEXT("MeasurementActor", "MeasurementFmt", "{0} {1}"),
+        FText::AsNumber(DisplayValue, &NumberFormat),
+        FText::FromString(UnitSuffix));
 
     IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementText(Widget, FormattedText);
 }
