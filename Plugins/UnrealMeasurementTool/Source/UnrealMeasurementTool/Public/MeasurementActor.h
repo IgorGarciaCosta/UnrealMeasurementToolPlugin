@@ -28,7 +28,9 @@ class UNREALMEASUREMENTTOOL_API AMeasurementActor : public AActor
 public:
 	AMeasurementActor();
 
-	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void OnConstruction(const FTransform &Transform) override;
+	virtual void Tick(float DeltaTime) override;
+	virtual bool ShouldTickIfViewportsOnly() const override { return true; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
@@ -40,4 +42,7 @@ protected:
 private:
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
+
+	/** Rotates the widget to always face the camera (billboard). */
+	void FaceWidgetToCamera();
 };

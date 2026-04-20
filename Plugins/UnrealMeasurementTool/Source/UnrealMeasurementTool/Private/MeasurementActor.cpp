@@ -7,14 +7,15 @@
 
 AMeasurementActor::AMeasurementActor()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bStartWithTickEnabled = true;
 
     SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
     SetRootComponent(SplineComponent);
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
     WidgetComponent->SetupAttachment(SplineComponent);
-    WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+    WidgetComponent->SetWidgetSpace(EWidgetSpace::World);
     WidgetComponent->SetDrawAtDesiredSize(true);
 }
 
@@ -22,6 +23,31 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
 {
     Super::OnConstruction(Transform);
     UpdateMeasurementText();
+}
+
+void AMeasurementActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    FaceWidgetToCamera();
+}
+
+void AMeasurementActor::FaceWidgetToCamera()
+{
+    if (!WidgetComponent)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World || World->ViewLocationsRenderedLastFrame.Num() == 0)
+    {
+        return;
+    }
+
+    const FVector CameraLocation = World->ViewLocationsRenderedLastFrame[0];
+    const FVector WidgetLocation = WidgetComponent->GetComponentLocation();
+    const FVector Direction = CameraLocation - WidgetLocation;
+    WidgetComponent->SetWorldRotation(Direction.Rotation());
 }
 
 void AMeasurementActor::UpdateMeasurementText()
