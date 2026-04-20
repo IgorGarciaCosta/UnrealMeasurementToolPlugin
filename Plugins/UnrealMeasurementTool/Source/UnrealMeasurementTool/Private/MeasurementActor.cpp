@@ -50,6 +50,53 @@ void AMeasurementActor::FaceWidgetToCamera()
     WidgetComponent->SetWorldRotation(Direction.Rotation());
 }
 
+void AMeasurementActor::ResetSpline()
+{
+    if (!SplineComponent)
+    {
+        return;
+    }
+
+    // Reset actor rotation and scale, keep location
+    SetActorRotation(FRotator::ZeroRotator);
+    SetActorScale3D(FVector::OneVector);
+
+    // Reset spline to default 2-point configuration
+    SplineComponent->ClearSplinePoints(false);
+    SplineComponent->AddSplinePoint(FVector(0.f, 0.f, 0.f), ESplineCoordinateSpace::Local, false);
+    SplineComponent->AddSplinePoint(FVector(100.f, 0.f, 0.f), ESplineCoordinateSpace::Local, true);
+
+    UpdateMeasurementText();
+}
+
+void AMeasurementActor::ApplyManualSize()
+{
+    if (!SplineComponent)
+    {
+        return;
+    }
+
+    const float DesiredLengthCm = ManualSizeMeters * 100.0f;
+    const float CurrentLength = SplineComponent->GetSplineLength();
+
+    if (CurrentLength <= KINDA_SMALL_NUMBER)
+    {
+        return;
+    }
+
+    const float ScaleFactor = DesiredLengthCm / CurrentLength;
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        FVector Location = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+        SplineComponent->SetLocationAtSplinePoint(i, Location * ScaleFactor, ESplineCoordinateSpace::Local, false);
+    }
+
+    SplineComponent->UpdateSpline();
+    UpdateMeasurementText();
+}
+
 void AMeasurementActor::UpdateMeasurementText()
 {
     if (!SplineComponent || !WidgetComponent)

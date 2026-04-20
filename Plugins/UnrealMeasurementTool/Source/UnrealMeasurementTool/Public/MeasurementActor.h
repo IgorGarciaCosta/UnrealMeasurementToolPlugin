@@ -39,6 +39,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
 	TObjectPtr<UWidgetComponent> WidgetComponent;
 
+	/** Resets the spline to its default state (2 points), clears rotation and scale. */
+	UFUNCTION(CallInEditor, Category = "Measurement", meta = (DisplayName = "Reset"))
+	void ResetSpline();
+
+	/** Size in meters to apply when Submit is pressed. */
+	UPROPERTY(EditAnywhere, Category = "Measurement|Set Size Manually", meta = (DisplayName = "Size (meters)", ClampMin = "0.01"))
+	float ManualSizeMeters = 1.0f;
+
+	/** Rescales the spline so its total length matches ManualSizeMeters. */
+	UFUNCTION(CallInEditor, Category = "Measurement|Set Size Manually", meta = (DisplayName = "Submit"))
+	void ApplyManualSize();
+
 private:
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
