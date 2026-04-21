@@ -8,6 +8,8 @@
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealmeasurementtool\\definitions.unrealmeasurementtool.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementactor.gen.cpp",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\measurementactor.h",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\measurementunit.h",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementunit.generated.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementactor.generated.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementtextwidget.gen.cpp",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\measurementtextwidget.h",
@@ -92,9 +94,18 @@
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementtxtwgtcommunicationinterface.generated.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementtextwidget.generated.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementtxtwgtcommunicationinterface.gen.cpp",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementunit.gen.cpp",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\unrealmeasurementtool.init.gen.cpp",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealmeasurementtool\\permoduleinline.gen.cpp",
-            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\private\\measurementtextwidget.cpp",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\components\\textblock.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\components\\textwidgettypes.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\umg\\uht\\textwidgettypes.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\umg\\uht\\textblock.generated.h",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\private\\measurementtxtwgtcommunicationinterface.cpp",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\private\\unrealmeasurementtool.cpp",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\unrealmeasurementtool.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

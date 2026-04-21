@@ -7,6 +7,8 @@
         "Includes": [
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\unrealmeasurementtool\\definitions.unrealmeasurementtool.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\measurementactor.h",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\source\\unrealmeasurementtool\\public\\measurementunit.h",
+            "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementunit.generated.h",
             "c:\\users\\isilv125\\documents\\github\\unrealmeasurementtoolplugin\\plugins\\unrealmeasurementtool\\intermediate\\build\\win64\\unrealeditor\\inc\\unrealmeasurementtool\\uht\\measurementactor.generated.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\components\\splinecomponent.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\geometrycore\\public\\boxtypes.h",
@@ -51,6 +53,8 @@
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\geometrycore\\public\\splines\\splinetypeid.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\spline.generated.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\splinecomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\components\\textrendercomponent.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\textrendercomponent.generated.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\components\\widgetcomponent.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\blueprint\\userwidget.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\blueprint\\umgsequenceplaymode.h",

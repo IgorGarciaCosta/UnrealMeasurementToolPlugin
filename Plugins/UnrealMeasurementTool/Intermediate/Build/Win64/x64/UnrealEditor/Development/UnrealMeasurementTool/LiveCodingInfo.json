@@ -5,12 +5,13 @@
 			"MeasurementActor.gen.cpp.obj",
 			"MeasurementTextWidget.gen.cpp.obj",
 			"MeasurementTxtWgtCommunicationInterface.gen.cpp.obj",
+			"MeasurementUnit.gen.cpp.obj",
 			"UnrealMeasurementTool.init.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
-			"MeasurementActor.cpp.obj",
 			"MeasurementTextWidget.cpp.obj",
 			"MeasurementTxtWgtCommunicationInterface.cpp.obj",
-			"UnrealMeasurementTool.cpp.obj"
+			"UnrealMeasurementTool.cpp.obj",
+			"MeasurementActor.cpp.obj"
 		]
 	}
 }

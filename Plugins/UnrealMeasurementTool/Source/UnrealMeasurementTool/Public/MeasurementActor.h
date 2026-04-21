@@ -8,6 +8,7 @@
 #include "MeasurementActor.generated.h"
 
 class USplineComponent;
+class UTextRenderComponent;
 class UWidgetComponent;
 
 /**
@@ -86,7 +87,27 @@ protected:
 			  meta = (EditCondition = "SnapMode == ESnapMode::SurfaceSnap", DisplayName = "Show Snap Radius"))
 	bool bShowSnapRadius = false;
 
+	// --- Cumulative Labels ---
+
+	/** When enabled, displays the accumulated distance at each spline point. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
+			  meta = (DisplayName = "Show Cumulative Labels"))
+	bool bShowCumulativeLabels = false;
+
+	/** World-size of the cumulative label text. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
+			  meta = (DisplayName = "Label Size", ClampMin = "1.0", EditCondition = "bShowCumulativeLabels"))
+	float CumulativeLabelSize = 24.0f;
+
+	/** Color of the cumulative label text. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
+			  meta = (DisplayName = "Label Color", EditCondition = "bShowCumulativeLabels"))
+	FColor CumulativeLabelColor = FColor::White;
+
 private:
+	/** Dynamic array of text render components, one per spline point. */
+	UPROPERTY()
+	TArray<TObjectPtr<UTextRenderComponent>> PointLabelComponents;
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
 
@@ -103,4 +124,15 @@ private:
 
 	/** Draws debug spheres around each spline point to visualize SnapRadius. */
 	void DrawSnapRadiusDebug() const;
+
+	/** Creates / destroys / updates cumulative distance labels at each spline point. */
+	void UpdatePointLabels();
+
+	/** Converts a distance in centimeters to the current DisplayUnit and appends the suffix. */
+	FText FormatDistance(float DistanceCm) const;
+	alignas
+
+		/** Rotates all point label components to face the camera. */
+		void
+		FacePointLabelsToCamera();
 };

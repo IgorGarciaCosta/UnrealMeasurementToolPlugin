@@ -2,6 +2,7 @@
 
 #include "MeasurementActor.h"
 #include "Components/SplineComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 #include "DrawDebugHelpers.h"
 #include "MeasurementTxtWgtCommunicationInterface.h"
@@ -25,12 +26,14 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     Super::OnConstruction(Transform);
     SnapSplinePoints();
     UpdateMeasurementText();
+    UpdatePointLabels();
 }
 
 void AMeasurementActor::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     FaceWidgetToCamera();
+    FacePointLabelsToCamera();
     DrawSnapRadiusDebug();
 }
 
@@ -67,6 +70,13 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
     {
         UpdateMeasurementText();
+        UpdatePointLabels();
+    }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bShowCumulativeLabels) ||
+             PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, CumulativeLabelSize) ||
+             PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, CumulativeLabelColor))
+    {
+        UpdatePointLabels();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapMode) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapRadius) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, GroundTraceDistance) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapTraceChannel))
     {
@@ -93,6 +103,7 @@ void AMeasurementActor::ResetSpline()
     SplineComponent->AddSplinePoint(FVector(100.f, 0.f, 0.f), ESplineCoordinateSpace::Local, true);
 
     UpdateMeasurementText();
+    UpdatePointLabels();
 }
 
 void AMeasurementActor::ApplyManualSize()
@@ -149,6 +160,7 @@ void AMeasurementActor::ApplyManualSize()
 
     SplineComponent->UpdateSpline();
     UpdateMeasurementText();
+    UpdatePointLabels();
 }
 
 void AMeasurementActor::UpdateMeasurementText()
@@ -170,47 +182,7 @@ void AMeasurementActor::UpdateMeasurementText()
     }
 
     const float SplineLengthCm = SplineComponent->GetSplineLength();
-
-    float DisplayValue = 0.0f;
-    FString UnitSuffix;
-
-    switch (DisplayUnit)
-    {
-    case EMeasurementUnit::Centimeters:
-        DisplayValue = SplineLengthCm;
-        UnitSuffix = TEXT("cm");
-        break;
-    case EMeasurementUnit::Meters:
-        DisplayValue = SplineLengthCm / 100.0f;
-        UnitSuffix = TEXT("m");
-        break;
-    case EMeasurementUnit::Kilometers:
-        DisplayValue = SplineLengthCm / 100000.0f;
-        UnitSuffix = TEXT("km");
-        break;
-    case EMeasurementUnit::Feet:
-        DisplayValue = SplineLengthCm / 30.48f;
-        UnitSuffix = TEXT("ft");
-        break;
-    case EMeasurementUnit::Inches:
-        DisplayValue = SplineLengthCm / 2.54f;
-        UnitSuffix = TEXT("in");
-        break;
-    case EMeasurementUnit::Yards:
-        DisplayValue = SplineLengthCm / 91.44f;
-        UnitSuffix = TEXT("yd");
-        break;
-    }
-
-    FNumberFormattingOptions NumberFormat;
-    NumberFormat.MinimumFractionalDigits = 2;
-    NumberFormat.MaximumFractionalDigits = 2;
-
-    const FText FormattedText = FText::Format(
-        NSLOCTEXT("MeasurementActor", "MeasurementFmt", "{0} {1}"),
-        FText::AsNumber(DisplayValue, &NumberFormat),
-        FText::FromString(UnitSuffix));
-
+    const FText FormattedText = FormatDistance(SplineLengthCm);
     IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementText(Widget, FormattedText);
 }
 
@@ -318,5 +290,127 @@ void AMeasurementActor::DrawSnapRadiusDebug() const
     {
         const FVector WorldPt = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
         DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, false, -1.0f, SDPG_World, 1.0f);
+    }
+}
+
+FText AMeasurementActor::FormatDistance(float DistanceCm) const
+{
+    float DisplayValue = 0.0f;
+    FString UnitSuffix;
+
+    switch (DisplayUnit)
+    {
+    case EMeasurementUnit::Centimeters:
+        DisplayValue = DistanceCm;
+        UnitSuffix = TEXT("cm");
+        break;
+    case EMeasurementUnit::Meters:
+        DisplayValue = DistanceCm / 100.0f;
+        UnitSuffix = TEXT("m");
+        break;
+    case EMeasurementUnit::Kilometers:
+        DisplayValue = DistanceCm / 100000.0f;
+        UnitSuffix = TEXT("km");
+        break;
+    case EMeasurementUnit::Feet:
+        DisplayValue = DistanceCm / 30.48f;
+        UnitSuffix = TEXT("ft");
+        break;
+    case EMeasurementUnit::Inches:
+        DisplayValue = DistanceCm / 2.54f;
+        UnitSuffix = TEXT("in");
+        break;
+    case EMeasurementUnit::Yards:
+        DisplayValue = DistanceCm / 91.44f;
+        UnitSuffix = TEXT("yd");
+        break;
+    }
+
+    FNumberFormattingOptions NumberFormat;
+    NumberFormat.MinimumFractionalDigits = 2;
+    NumberFormat.MaximumFractionalDigits = 2;
+
+    return FText::Format(
+        NSLOCTEXT("MeasurementActor", "MeasurementFmt", "{0} {1}"),
+        FText::AsNumber(DisplayValue, &NumberFormat),
+        FText::FromString(UnitSuffix));
+}
+
+void AMeasurementActor::UpdatePointLabels()
+{
+    if (!SplineComponent)
+    {
+        return;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    const int32 DesiredCount = bShowCumulativeLabels ? NumPoints : 0;
+
+    // Remove excess components
+    while (PointLabelComponents.Num() > DesiredCount)
+    {
+        UTextRenderComponent *Comp = PointLabelComponents.Pop();
+        if (IsValid(Comp))
+        {
+            Comp->DestroyComponent();
+        }
+    }
+
+    // Create missing components
+    while (PointLabelComponents.Num() < DesiredCount)
+    {
+        UTextRenderComponent *NewLabel = NewObject<UTextRenderComponent>(this);
+        NewLabel->SetupAttachment(SplineComponent);
+        NewLabel->RegisterComponent();
+        NewLabel->SetHorizontalAlignment(EHTA_Center);
+        NewLabel->SetVerticalAlignment(EVRTA_TextCenter);
+        PointLabelComponents.Add(NewLabel);
+    }
+
+    // Update each label's position, text, size, and color
+    for (int32 i = 0; i < DesiredCount; ++i)
+    {
+        UTextRenderComponent *Label = PointLabelComponents[i];
+        if (!IsValid(Label))
+        {
+            continue;
+        }
+
+        const FVector PointLocation = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+        Label->SetRelativeLocation(PointLocation + FVector(0.0f, 0.0f, 30.0f));
+
+        const float CumulativeDistCm = SplineComponent->GetDistanceAlongSplineAtSplinePoint(i);
+        Label->SetText(FormatDistance(CumulativeDistCm));
+
+        Label->SetWorldSize(CumulativeLabelSize);
+        Label->SetTextRenderColor(CumulativeLabelColor);
+    }
+}
+
+void AMeasurementActor::FacePointLabelsToCamera()
+{
+    if (!bShowCumulativeLabels || PointLabelComponents.Num() == 0)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World || World->ViewLocationsRenderedLastFrame.Num() == 0)
+    {
+        return;
+    }
+
+    const FVector CameraLocation = World->ViewLocationsRenderedLastFrame[0];
+
+    for (UTextRenderComponent *Label : PointLabelComponents)
+    {
+        if (!IsValid(Label))
+        {
+            continue;
+        }
+
+        const FVector LabelLocation = Label->GetComponentLocation();
+        const FVector Direction = CameraLocation - LabelLocation;
+        Label->SetWorldRotation(Direction.Rotation());
     }
 }
