@@ -61,6 +61,10 @@ protected:
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))
 	void ApplyManualSize();
 
+	/** When enabled, spline segments are straight lines instead of smooth curves. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Linear"))
+	bool bLinearSpline = false;
+
 	// --- Snap Settings ---
 
 	/** How spline points should snap to geometry. */
@@ -117,6 +121,9 @@ private:
 	/** Snaps all spline points to geometry based on SnapMode. */
 	void SnapSplinePoints();
 
+	/** Sets all spline points to Linear or Curve based on bLinearSpline. */
+	void ApplySplinePointType();
+
 	/** Finds the nearest surface hit within a sphere around Origin using cardinal-direction traces. */
 	bool FindNearestSurface(UWorld *World, const FVector &Origin, float Radius,
 							ECollisionChannel Channel, const FCollisionQueryParams &Params,
@@ -130,9 +137,7 @@ private:
 
 	/** Converts a distance in centimeters to the current DisplayUnit and appends the suffix. */
 	FText FormatDistance(float DistanceCm) const;
-	alignas
 
-		/** Rotates all point label components to face the camera. */
-		void
-		FacePointLabelsToCamera();
+	/** Rotates all point label components to face the camera. */
+	void FacePointLabelsToCamera();
 };

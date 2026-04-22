@@ -25,6 +25,7 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
 {
     Super::OnConstruction(Transform);
     SnapSplinePoints();
+    ApplySplinePointType();
     UpdateMeasurementText();
     UpdatePointLabels();
 }
@@ -83,6 +84,12 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         SnapSplinePoints();
         UpdateMeasurementText();
     }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bLinearSpline))
+    {
+        ApplySplinePointType();
+        UpdateMeasurementText();
+        UpdatePointLabels();
+    }
 }
 #endif
 
@@ -102,6 +109,7 @@ void AMeasurementActor::ResetSpline()
     SplineComponent->AddSplinePoint(FVector(0.f, 0.f, 0.f), ESplineCoordinateSpace::Local, false);
     SplineComponent->AddSplinePoint(FVector(100.f, 0.f, 0.f), ESplineCoordinateSpace::Local, true);
 
+    ApplySplinePointType();
     UpdateMeasurementText();
     UpdatePointLabels();
 }
@@ -161,6 +169,24 @@ void AMeasurementActor::ApplyManualSize()
     SplineComponent->UpdateSpline();
     UpdateMeasurementText();
     UpdatePointLabels();
+}
+
+void AMeasurementActor::ApplySplinePointType()
+{
+    if (!SplineComponent)
+    {
+        return;
+    }
+
+    const ESplinePointType::Type PointType = bLinearSpline ? ESplinePointType::Linear : ESplinePointType::Curve;
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        SplineComponent->SetSplinePointType(i, PointType, false);
+    }
+
+    SplineComponent->UpdateSpline();
 }
 
 void AMeasurementActor::UpdateMeasurementText()
