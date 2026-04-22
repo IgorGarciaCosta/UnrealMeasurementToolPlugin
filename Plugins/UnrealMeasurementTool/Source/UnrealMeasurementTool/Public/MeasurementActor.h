@@ -49,6 +49,10 @@ protected:
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Reset"))
 	void ResetSpline();
 
+	/** Measurement mode: Distance (spline length) or Area (enclosed polygon). */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Mode"))
+	EMeasurementMode MeasurementMode = EMeasurementMode::Distance;
+
 	/** Unit used for the measurement display. */
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Unit"))
 	EMeasurementUnit DisplayUnit = EMeasurementUnit::Meters;
@@ -64,6 +68,11 @@ protected:
 	/** When enabled, spline segments are straight lines instead of smooth curves. */
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Linear"))
 	bool bLinearSpline = false;
+
+	/** Show a debug closing line from the last spline point to the first (Area mode). */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (DisplayName = "Show Closing Line", EditCondition = "MeasurementMode == EMeasurementMode::Area"))
+	bool bShowClosingLine = true;
 
 	// --- Snap Settings ---
 
@@ -137,6 +146,15 @@ private:
 
 	/** Converts a distance in centimeters to the current DisplayUnit and appends the suffix. */
 	FText FormatDistance(float DistanceCm) const;
+
+	/** Calculates the enclosed area (cm²) of the polygon formed by spline points. */
+	float CalculateEnclosedArea() const;
+
+	/** Converts an area in cm² to the current DisplayUnit² and formats it as text. */
+	FText FormatArea(float AreaCmSq) const;
+
+	/** Draws a debug closing line from last spline point to first (Area mode). */
+	void DrawClosingLine() const;
 
 	/** Rotates all point label components to face the camera. */
 	void FacePointLabelsToCamera();

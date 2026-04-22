@@ -20,6 +20,7 @@ ENGINE_API UEnum* Z_Construct_UEnum_Engine_ECollisionChannel();
 UMG_API UClass* Z_Construct_UClass_UWidgetComponent_NoRegister();
 UNREALMEASUREMENTTOOL_API UClass* Z_Construct_UClass_AMeasurementActor();
 UNREALMEASUREMENTTOOL_API UClass* Z_Construct_UClass_AMeasurementActor_NoRegister();
+UNREALMEASUREMENTTOOL_API UEnum* Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementMode();
 UNREALMEASUREMENTTOOL_API UEnum* Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementUnit();
 UNREALMEASUREMENTTOOL_API UEnum* Z_Construct_UEnum_UnrealMeasurementTool_ESnapMode();
 UPackage* Z_Construct_UPackage__Script_UnrealMeasurementTool();
@@ -166,6 +167,17 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MeasurementMode_MetaData[] = {
+		{ "Category", "Measurement Control" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Measurement mode: Distance (spline length) or Area (enclosed polygon). */" },
+#endif
+		{ "DisplayName", "Mode" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Measurement mode: Distance (spline length) or Area (enclosed polygon)." },
+#endif
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_DisplayUnit_MetaData[] = {
 		{ "Category", "Measurement Control" },
 #if !UE_BUILD_SHIPPING
@@ -198,6 +210,18 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
 #if !UE_BUILD_SHIPPING
 		{ "ToolTip", "When enabled, spline segments are straight lines instead of smooth curves." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bShowClosingLine_MetaData[] = {
+		{ "Category", "Measurement Control" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Show a debug closing line from the last spline point to the first (Area mode). */" },
+#endif
+		{ "DisplayName", "Show Closing Line" },
+		{ "EditCondition", "MeasurementMode == EMeasurementMode::Area" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Show a debug closing line from the last spline point to the first (Area mode)." },
 #endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SnapMode_MetaData[] = {
@@ -308,11 +332,15 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 // ********** Begin Class AMeasurementActor constinit property declarations ************************
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_SplineComponent;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_WidgetComponent;
+	static const UECodeGen_Private::FBytePropertyParams NewProp_MeasurementMode_Underlying;
+	static const UECodeGen_Private::FEnumPropertyParams NewProp_MeasurementMode;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_DisplayUnit_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_DisplayUnit;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_ManualSize;
 	static void NewProp_bLinearSpline_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bLinearSpline;
+	static void NewProp_bShowClosingLine_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bShowClosingLine;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_SnapMode_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_SnapMode;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_SnapRadius;
@@ -347,6 +375,8 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 // ********** Begin Class AMeasurementActor Property Definitions ***********************************
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SplineComponent = { "SplineComponent", nullptr, (EPropertyFlags)0x01240800000a001d, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, SplineComponent), Z_Construct_UClass_USplineComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SplineComponent_MetaData), NewProp_SplineComponent_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent = { "WidgetComponent", nullptr, (EPropertyFlags)0x01240800000a001d, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, WidgetComponent), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_WidgetComponent_MetaData), NewProp_WidgetComponent_MetaData) };
+const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode = { "MeasurementMode", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, MeasurementMode), Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementMode, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MeasurementMode_MetaData), NewProp_MeasurementMode_MetaData) }; // 2049286744
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit = { "DisplayUnit", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, DisplayUnit), Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementUnit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_DisplayUnit_MetaData), NewProp_DisplayUnit_MetaData) }; // 4084313674
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize = { "ManualSize", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, ManualSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ManualSize_MetaData), NewProp_ManualSize_MetaData) };
@@ -355,6 +385,11 @@ void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline_SetBit(
 	((AMeasurementActor*)Obj)->bLinearSpline = 1;
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline = { "bLinearSpline", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AMeasurementActor), &Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bLinearSpline_MetaData), NewProp_bLinearSpline_MetaData) };
+void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine_SetBit(void* Obj)
+{
+	((AMeasurementActor*)Obj)->bShowClosingLine = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine = { "bShowClosingLine", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AMeasurementActor), &Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bShowClosingLine_MetaData), NewProp_bShowClosingLine_MetaData) };
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapMode_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapMode = { "SnapMode", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, SnapMode), Z_Construct_UEnum_UnrealMeasurementTool_ESnapMode, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SnapMode_MetaData), NewProp_SnapMode_MetaData) }; // 642754747
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapRadius = { "SnapRadius", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, SnapRadius), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SnapRadius_MetaData), NewProp_SnapRadius_MetaData) };
@@ -377,10 +412,13 @@ const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_AMeasurementAct
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurementActor_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SplineComponent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode_Underlying,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapMode_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapMode,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SnapRadius,
@@ -436,10 +474,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 3831877295U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 3488841620U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_1534719552{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_3419488194{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,

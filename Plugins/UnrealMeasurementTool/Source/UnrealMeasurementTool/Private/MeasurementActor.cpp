@@ -36,6 +36,7 @@ void AMeasurementActor::Tick(float DeltaTime)
     FaceWidgetToCamera();
     FacePointLabelsToCamera();
     DrawSnapRadiusDebug();
+    DrawClosingLine();
 }
 
 void AMeasurementActor::FaceWidgetToCamera()
@@ -90,6 +91,11 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         UpdateMeasurementText();
         UpdatePointLabels();
     }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, MeasurementMode))
+    {
+        UpdateMeasurementText();
+        UpdatePointLabels();
+    }
 }
 #endif
 
@@ -122,6 +128,60 @@ void AMeasurementActor::ApplyManualSize()
     }
 
     float DesiredLengthCm = 0.0f;
+
+    // In Area mode, ManualSize is a target area — convert to cm² and use sqrt scaling.
+    if (MeasurementMode == EMeasurementMode::Area)
+    {
+        float DesiredAreaCmSq = 0.0f;
+        switch (DisplayUnit)
+        {
+        case EMeasurementUnit::Centimeters:
+            DesiredAreaCmSq = ManualSize;
+            break;
+        case EMeasurementUnit::Meters:
+            DesiredAreaCmSq = ManualSize * 10000.0f;
+            break;
+        case EMeasurementUnit::Kilometers:
+            DesiredAreaCmSq = ManualSize * 1e10f;
+            break;
+        case EMeasurementUnit::Feet:
+            DesiredAreaCmSq = ManualSize * 929.0304f;
+            break;
+        case EMeasurementUnit::Inches:
+            DesiredAreaCmSq = ManualSize * 6.4516f;
+            break;
+        case EMeasurementUnit::Yards:
+            DesiredAreaCmSq = ManualSize * 8361.2736f;
+            break;
+        }
+
+        const float CurrentArea = CalculateEnclosedArea();
+        if (CurrentArea <= KINDA_SMALL_NUMBER)
+        {
+            return;
+        }
+
+        const float ScaleFactor = FMath::Sqrt(DesiredAreaCmSq / CurrentArea);
+        const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+
+        SplineComponent->Modify();
+
+        for (int32 i = 0; i < NumPoints; ++i)
+        {
+            FVector Location = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+            SplineComponent->SetLocationAtSplinePoint(i, Location * ScaleFactor, ESplineCoordinateSpace::Local, false);
+
+            FVector ArriveTangent = SplineComponent->GetArriveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+            FVector LeaveTangent = SplineComponent->GetLeaveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+            SplineComponent->SetTangentsAtSplinePoint(i, ArriveTangent * ScaleFactor, LeaveTangent * ScaleFactor, ESplineCoordinateSpace::Local, false);
+        }
+
+        SplineComponent->UpdateSpline();
+        UpdateMeasurementText();
+        UpdatePointLabels();
+        return;
+    }
+
     switch (DisplayUnit)
     {
     case EMeasurementUnit::Centimeters:
@@ -208,7 +268,18 @@ void AMeasurementActor::UpdateMeasurementText()
     }
 
     const float SplineLengthCm = SplineComponent->GetSplineLength();
-    const FText FormattedText = FormatDistance(SplineLengthCm);
+    FText FormattedText;
+
+    if (MeasurementMode == EMeasurementMode::Area)
+    {
+        const float AreaCmSq = CalculateEnclosedArea();
+        FormattedText = FormatArea(AreaCmSq);
+    }
+    else
+    {
+        FormattedText = FormatDistance(SplineLengthCm);
+    }
+
     IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementText(Widget, FormattedText);
 }
 
@@ -439,4 +510,133 @@ void AMeasurementActor::FacePointLabelsToCamera()
         const FVector Direction = CameraLocation - LabelLocation;
         Label->SetWorldRotation(Direction.Rotation());
     }
+}
+
+float AMeasurementActor::CalculateEnclosedArea() const
+{
+    if (!SplineComponent)
+    {
+        return 0.0f;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    if (NumPoints < 3)
+    {
+        return 0.0f;
+    }
+
+    // Gather world-space positions of all spline points.
+    TArray<FVector> Points;
+    Points.SetNum(NumPoints);
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        Points[i] = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
+    }
+
+    // Compute polygon normal using Newell's method (handles arbitrary 3D polygons).
+    FVector Normal = FVector::ZeroVector;
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        const FVector &Current = Points[i];
+        const FVector &Next = Points[(i + 1) % NumPoints];
+        Normal.X += (Current.Y - Next.Y) * (Current.Z + Next.Z);
+        Normal.Y += (Current.Z - Next.Z) * (Current.X + Next.X);
+        Normal.Z += (Current.X - Next.X) * (Current.Y + Next.Y);
+    }
+
+    if (Normal.IsNearlyZero())
+    {
+        return 0.0f;
+    }
+
+    Normal.Normalize();
+
+    // Build a 2D coordinate frame on the polygon's plane.
+    FVector UAxis, VAxis;
+    Normal.FindBestAxisVectors(UAxis, VAxis);
+
+    // Project points onto the 2D plane and apply the Shoelace formula.
+    double Area2D = 0.0;
+    for (int32 i = 0; i < NumPoints; ++i)
+    {
+        const FVector &Current = Points[i];
+        const FVector &Next = Points[(i + 1) % NumPoints];
+
+        const double Ui = FVector::DotProduct(Current, UAxis);
+        const double Vi = FVector::DotProduct(Current, VAxis);
+        const double Uj = FVector::DotProduct(Next, UAxis);
+        const double Vj = FVector::DotProduct(Next, VAxis);
+
+        Area2D += (Ui * Vj) - (Uj * Vi);
+    }
+
+    return static_cast<float>(FMath::Abs(Area2D) * 0.5);
+}
+
+FText AMeasurementActor::FormatArea(float AreaCmSq) const
+{
+    float DisplayValue = 0.0f;
+    FString UnitSuffix;
+
+    switch (DisplayUnit)
+    {
+    case EMeasurementUnit::Centimeters:
+        DisplayValue = AreaCmSq;
+        UnitSuffix = TEXT("cm\u00B2");
+        break;
+    case EMeasurementUnit::Meters:
+        DisplayValue = AreaCmSq / 10000.0f;
+        UnitSuffix = TEXT("m\u00B2");
+        break;
+    case EMeasurementUnit::Kilometers:
+        DisplayValue = AreaCmSq / 1e10f;
+        UnitSuffix = TEXT("km\u00B2");
+        break;
+    case EMeasurementUnit::Feet:
+        DisplayValue = AreaCmSq / 929.0304f;
+        UnitSuffix = TEXT("ft\u00B2");
+        break;
+    case EMeasurementUnit::Inches:
+        DisplayValue = AreaCmSq / 6.4516f;
+        UnitSuffix = TEXT("in\u00B2");
+        break;
+    case EMeasurementUnit::Yards:
+        DisplayValue = AreaCmSq / 8361.2736f;
+        UnitSuffix = TEXT("yd\u00B2");
+        break;
+    }
+
+    FNumberFormattingOptions NumberFormat;
+    NumberFormat.MinimumFractionalDigits = 2;
+    NumberFormat.MaximumFractionalDigits = 2;
+
+    return FText::Format(
+        NSLOCTEXT("MeasurementActor", "AreaFmt", "{0} {1}"),
+        FText::AsNumber(DisplayValue, &NumberFormat),
+        FText::FromString(UnitSuffix));
+}
+
+void AMeasurementActor::DrawClosingLine() const
+{
+    if (MeasurementMode != EMeasurementMode::Area || !bShowClosingLine || !SplineComponent)
+    {
+        return;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    if (NumPoints < 3)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+    const FVector FirstPoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
+    const FVector LastPoint = SplineComponent->GetLocationAtSplinePoint(NumPoints - 1, ESplineCoordinateSpace::World);
+
+    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, false, -1.0f, SDPG_World, 2.0f);
 }

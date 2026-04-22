@@ -17,6 +17,13 @@ enum class EMeasurementUnit : uint8
 };
 
 UENUM(BlueprintType)
+enum class EMeasurementMode : uint8
+{
+    Distance UMETA(DisplayName = "Distance"),
+    Area UMETA(DisplayName = "Area"),
+};
+
+UENUM(BlueprintType)
 enum class ESnapMode : uint8
 {
     None UMETA(DisplayName = "Off"),
