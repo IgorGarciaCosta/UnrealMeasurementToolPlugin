@@ -25,7 +25,8 @@ class UMeasurementLabelComponent;
  * Calculations / formatting live in UMeasurementCalculator.
  *
  * The measurement updates in the editor when spline points are moved
- * (OnConstruction). No Tick overhead at runtime.
+ * (OnConstruction). Billboard (face-camera) rotation of labels and widget
+ * runs on a low-frequency timer (10 Hz) instead of per-frame Tick.
  */
 UCLASS()
 class UNREALMEASUREMENTTOOL_API AMeasurementActor : public AActor
@@ -36,8 +37,7 @@ public:
 	AMeasurementActor();
 
 	virtual void OnConstruction(const FTransform &Transform) override;
-	virtual void Tick(float DeltaTime) override;
-	virtual bool ShouldTickIfViewportsOnly() const override { return true; }
+	virtual void Destroyed() override;
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
@@ -88,6 +88,15 @@ protected:
 private:
 	/** When true, persistent debug draws (snap radius, closing line) need to be redrawn. */
 	bool bDebugDrawDirty = true;
+
+	/** Timer handle for the periodic billboard + debug-draw update. */
+	FTimerHandle BillboardTimerHandle;
+
+	/** Timer callback: rotates widget/labels to face camera, redraws dirty debug lines. */
+	void UpdateBillboard();
+
+	/** Starts the billboard timer if it is not already running. */
+	void EnsureBillboardTimer();
 
 	/** Reads spline length / area, formats it, and sends to the widget via interface. */
 	void UpdateMeasurementText();

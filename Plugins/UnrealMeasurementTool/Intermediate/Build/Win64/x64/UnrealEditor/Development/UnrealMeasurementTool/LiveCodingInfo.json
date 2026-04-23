@@ -11,13 +11,13 @@
 			"MeasurementUnit.gen.cpp.obj",
 			"UnrealMeasurementTool.init.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
+			"MeasurementCalculator.cpp.obj",
+			"MeasurementLabelComponent.cpp.obj",
+			"MeasurementSnapComponent.cpp.obj",
 			"MeasurementTextWidget.cpp.obj",
 			"MeasurementTxtWgtCommunicationInterface.cpp.obj",
 			"UnrealMeasurementTool.cpp.obj",
-			"MeasurementActor.cpp.obj",
-			"MeasurementCalculator.cpp.obj",
-			"MeasurementLabelComponent.cpp.obj",
-			"MeasurementSnapComponent.cpp.obj"
+			"MeasurementActor.cpp.obj"
 		]
 	}
 }

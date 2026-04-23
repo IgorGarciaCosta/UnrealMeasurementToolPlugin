@@ -2,6 +2,7 @@
 	"BuildId": "47537391",
 	"Modules": 
 	{
-		"UnrealMeasurementTool": "UnrealEditor-UnrealMeasurementTool.dll"
+		"UnrealMeasurementTool": "UnrealEditor-UnrealMeasurementTool.dll",
+		"UnrealMeasurementToolEditor": "UnrealEditor-UnrealMeasurementToolEditor.dll"
 	}
 }

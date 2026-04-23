@@ -147,12 +147,12 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Class_MetaDataParams[] = {
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/**\n * Actor that uses a SplineComponent to measure distance and displays\n * the result through a WidgetComponent.\n *\n * Communication with the widget is fully decoupled via\n * IMeasurementTxtWgtCommunicationInterface \xe2\x80\x93 the actor never references\n * the concrete widget class.\n *\n * Snap logic is delegated to UMeasurementSnapComponent.\n * Label management is delegated to UMeasurementLabelComponent.\n * Calculations / formatting live in UMeasurementCalculator.\n *\n * The measurement updates in the editor when spline points are moved\n * (OnConstruction). No Tick overhead at runtime.\n */" },
+		{ "Comment", "/**\n * Actor that uses a SplineComponent to measure distance and displays\n * the result through a WidgetComponent.\n *\n * Communication with the widget is fully decoupled via\n * IMeasurementTxtWgtCommunicationInterface \xe2\x80\x93 the actor never references\n * the concrete widget class.\n *\n * Snap logic is delegated to UMeasurementSnapComponent.\n * Label management is delegated to UMeasurementLabelComponent.\n * Calculations / formatting live in UMeasurementCalculator.\n *\n * The measurement updates in the editor when spline points are moved\n * (OnConstruction). Billboard (face-camera) rotation of labels and widget\n * runs on a low-frequency timer (10 Hz) instead of per-frame Tick.\n */" },
 #endif
 		{ "IncludePath", "MeasurementActor.h" },
 		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Actor that uses a SplineComponent to measure distance and displays\nthe result through a WidgetComponent.\n\nCommunication with the widget is fully decoupled via\nIMeasurementTxtWgtCommunicationInterface \xe2\x80\x93 the actor never references\nthe concrete widget class.\n\nSnap logic is delegated to UMeasurementSnapComponent.\nLabel management is delegated to UMeasurementLabelComponent.\nCalculations / formatting live in UMeasurementCalculator.\n\nThe measurement updates in the editor when spline points are moved\n(OnConstruction). No Tick overhead at runtime." },
+		{ "ToolTip", "Actor that uses a SplineComponent to measure distance and displays\nthe result through a WidgetComponent.\n\nCommunication with the widget is fully decoupled via\nIMeasurementTxtWgtCommunicationInterface \xe2\x80\x93 the actor never references\nthe concrete widget class.\n\nSnap logic is delegated to UMeasurementSnapComponent.\nLabel management is delegated to UMeasurementLabelComponent.\nCalculations / formatting live in UMeasurementCalculator.\n\nThe measurement updates in the editor when spline points are moved\n(OnConstruction). Billboard (face-camera) rotation of labels and widget\nruns on a low-frequency timer (10 Hz) instead of per-frame Tick." },
 #endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SplineComponent_MetaData[] = {
@@ -342,10 +342,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 2342236376U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 4138313154U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_3002617726{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_2052824446{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,

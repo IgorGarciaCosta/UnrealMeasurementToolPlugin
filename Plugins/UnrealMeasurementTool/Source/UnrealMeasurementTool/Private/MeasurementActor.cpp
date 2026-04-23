@@ -11,8 +11,7 @@
 
 AMeasurementActor::AMeasurementActor()
 {
-    PrimaryActorTick.bCanEverTick = true;
-    PrimaryActorTick.bStartWithTickEnabled = true;
+    PrimaryActorTick.bCanEverTick = false;
 
     SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
     SetRootComponent(SplineComponent);
@@ -34,12 +33,25 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     UpdateMeasurementText();
     bDebugDrawDirty = true;
+    EnsureBillboardTimer();
 }
 
-void AMeasurementActor::Tick(float DeltaTime)
+void AMeasurementActor::Destroyed()
 {
-    Super::Tick(DeltaTime);
+    GetWorldTimerManager().ClearTimer(BillboardTimerHandle);
+    Super::Destroyed();
+}
 
+void AMeasurementActor::EnsureBillboardTimer()
+{
+    if (!GetWorldTimerManager().IsTimerActive(BillboardTimerHandle))
+    {
+        GetWorldTimerManager().SetTimer(BillboardTimerHandle, this, &AMeasurementActor::UpdateBillboard, 0.1f, true);
+    }
+}
+
+void AMeasurementActor::UpdateBillboard()
+{
     FVector CameraLocation;
     if (UMeasurementCalculator::GetActiveCameraLocation(GetWorld(), CameraLocation))
     {

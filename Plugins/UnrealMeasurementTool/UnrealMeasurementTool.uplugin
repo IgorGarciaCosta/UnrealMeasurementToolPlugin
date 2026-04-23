@@ -18,6 +18,11 @@
 			"Name": "UnrealMeasurementTool",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UnrealMeasurementToolEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
 	]
 }
