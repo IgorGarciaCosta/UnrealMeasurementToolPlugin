@@ -1,7 +1,6 @@
 // UnrealMeasurementTool - Slate Panel for the Measurement Editor Mode
 
 #include "SMeasurementToolkitPanel.h"
-#include "MeasurementEdMode.h"
 #include "MeasurementActor.h"
 #include "MeasurementSnapComponent.h"
 #include "MeasurementLabelComponent.h"
@@ -14,9 +13,15 @@
 
 #define LOCTEXT_NAMESPACE "SMeasurementToolkitPanel"
 
+FMeasurementEdMode *SMeasurementToolkitPanel::GetEdMode() const
+{
+    return static_cast<FMeasurementEdMode *>(
+        GLevelEditorModeTools().GetActiveMode(EdModeID));
+}
+
 void SMeasurementToolkitPanel::Construct(const FArguments &InArgs, FMeasurementEdMode *InEdMode)
 {
-    EdMode = InEdMode;
+    EdModeID = InEdMode ? InEdMode->GetID() : FEditorModeID();
 
     // --- Create a Details View filtered to "Measurement Control" categories only ---
     FDetailsViewArgs DetailsArgs;
@@ -83,6 +88,7 @@ void SMeasurementToolkitPanel::RefreshDetails()
     if (!DetailsView.IsValid())
         return;
 
+    FMeasurementEdMode *EdMode = GetEdMode();
     AMeasurementActor *Actor = EdMode ? EdMode->GetSelectedMeasurementActor() : nullptr;
 
     if (Actor)
@@ -113,7 +119,7 @@ void SMeasurementToolkitPanel::RefreshDetails()
 
 FReply SMeasurementToolkitPanel::OnAddClicked()
 {
-    if (EdMode)
+    if (FMeasurementEdMode *EdMode = GetEdMode())
     {
         EdMode->SpawnMeasurementActor();
     }
@@ -122,7 +128,7 @@ FReply SMeasurementToolkitPanel::OnAddClicked()
 
 FReply SMeasurementToolkitPanel::OnDeleteClicked()
 {
-    if (EdMode)
+    if (FMeasurementEdMode *EdMode = GetEdMode())
     {
         EdMode->DeleteSelectedActor();
     }
@@ -131,6 +137,7 @@ FReply SMeasurementToolkitPanel::OnDeleteClicked()
 
 EVisibility SMeasurementToolkitPanel::GetDeleteButtonVisibility() const
 {
+    FMeasurementEdMode *EdMode = GetEdMode();
     return (EdMode && EdMode->GetSelectedMeasurementActor())
                ? EVisibility::Visible
                : EVisibility::Collapsed;

@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/DeclarativeSyntaxSupport.h"
+#include "EditorModeManager.h"
+#include "MeasurementEdMode.h"
 
-class FMeasurementEdMode;
 class IDetailsView;
 
 class SMeasurementToolkitPanel : public SCompoundWidget
@@ -21,7 +22,13 @@ public:
     void RefreshDetails();
 
 private:
-    FMeasurementEdMode *EdMode = nullptr;
+    /**
+     * Returns the cached EdMode pointer only if the mode is still active.
+     * Prevents dangling pointer access during async widget destruction.
+     */
+    FMeasurementEdMode *GetEdMode() const;
+
+    FEditorModeID EdModeID;
     TSharedPtr<IDetailsView> DetailsView;
 
     FReply OnAddClicked();
