@@ -317,6 +317,42 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ToolTip", "Color of the cumulative label text." },
 #endif
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bShowAngleLabels_MetaData[] = {
+		{ "Category", "Measurement Control|Angle Labels" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** When enabled, displays the angle between consecutive segments at each spline point. */" },
+#endif
+		{ "DisplayName", "Show Angle Labels" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "When enabled, displays the angle between consecutive segments at each spline point." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AngleLabelSize_MetaData[] = {
+		{ "Category", "Measurement Control|Angle Labels" },
+		{ "ClampMin", "1.0" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** World-size of the angle label text. */" },
+#endif
+		{ "DisplayName", "Label Size" },
+		{ "EditCondition", "bShowAngleLabels" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "World-size of the angle label text." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AngleLabelColor_MetaData[] = {
+		{ "Category", "Measurement Control|Angle Labels" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Color of the angle label text. */" },
+#endif
+		{ "DisplayName", "Label Color" },
+		{ "EditCondition", "bShowAngleLabels" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Color of the angle label text." },
+#endif
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PointLabelComponents_MetaData[] = {
 #if !UE_BUILD_SHIPPING
 		{ "Comment", "/** Dynamic array of text render components, one per spline point. */" },
@@ -325,6 +361,16 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
 #if !UE_BUILD_SHIPPING
 		{ "ToolTip", "Dynamic array of text render components, one per spline point." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AngleLabelComponents_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Dynamic array of text render components for angle labels. */" },
+#endif
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Dynamic array of text render components for angle labels." },
 #endif
 	};
 #endif // WITH_METADATA
@@ -352,8 +398,14 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bShowCumulativeLabels;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_CumulativeLabelSize;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_CumulativeLabelColor;
+	static void NewProp_bShowAngleLabels_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bShowAngleLabels;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_AngleLabelSize;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_AngleLabelColor;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_PointLabelComponents_Inner;
 	static const UECodeGen_Private::FArrayPropertyParams NewProp_PointLabelComponents;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_AngleLabelComponents_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_AngleLabelComponents;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class AMeasurementActor constinit property declarations **************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -407,8 +459,17 @@ void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowCumulativeLabels
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowCumulativeLabels = { "bShowCumulativeLabels", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AMeasurementActor), &Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowCumulativeLabels_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bShowCumulativeLabels_MetaData), NewProp_bShowCumulativeLabels_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_CumulativeLabelSize = { "CumulativeLabelSize", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, CumulativeLabelSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CumulativeLabelSize_MetaData), NewProp_CumulativeLabelSize_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_CumulativeLabelColor = { "CumulativeLabelColor", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, CumulativeLabelColor), Z_Construct_UScriptStruct_FColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CumulativeLabelColor_MetaData), NewProp_CumulativeLabelColor_MetaData) };
+void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowAngleLabels_SetBit(void* Obj)
+{
+	((AMeasurementActor*)Obj)->bShowAngleLabels = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowAngleLabels = { "bShowAngleLabels", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AMeasurementActor), &Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowAngleLabels_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bShowAngleLabels_MetaData), NewProp_bShowAngleLabels_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelSize = { "AngleLabelSize", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, AngleLabelSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AngleLabelSize_MetaData), NewProp_AngleLabelSize_MetaData) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelColor = { "AngleLabelColor", nullptr, (EPropertyFlags)0x0020080000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, AngleLabelColor), Z_Construct_UScriptStruct_FColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AngleLabelColor_MetaData), NewProp_AngleLabelColor_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_PointLabelComponents_Inner = { "PointLabelComponents", nullptr, (EPropertyFlags)0x0104000000080008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UTextRenderComponent_NoRegister, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_PointLabelComponents = { "PointLabelComponents", nullptr, (EPropertyFlags)0x0144008000000008, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, PointLabelComponents), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PointLabelComponents_MetaData), NewProp_PointLabelComponents_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelComponents_Inner = { "AngleLabelComponents", nullptr, (EPropertyFlags)0x0104000000080008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UTextRenderComponent_NoRegister, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelComponents = { "AngleLabelComponents", nullptr, (EPropertyFlags)0x0144008000000008, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, AngleLabelComponents), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AngleLabelComponents_MetaData), NewProp_AngleLabelComponents_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurementActor_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SplineComponent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent,
@@ -428,8 +489,13 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurem
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowCumulativeLabels,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_CumulativeLabelSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_CumulativeLabelColor,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowAngleLabels,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelSize,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelColor,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_PointLabelComponents_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_PointLabelComponents,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelComponents_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_AngleLabelComponents,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AMeasurementActor_Statics::PropPointers) < 2048);
 // ********** End Class AMeasurementActor Property Definitions *************************************
@@ -474,10 +540,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 3488841620U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 3904823206U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_3419488194{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_3315483747{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,

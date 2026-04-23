@@ -26,8 +26,9 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     Super::OnConstruction(Transform);
     SnapSplinePoints();
     ApplySplinePointType();
-    UpdateMeasurementText();
     UpdatePointLabels();
+    UpdateAngleLabels();
+    UpdateMeasurementText();
 }
 
 void AMeasurementActor::Tick(float DeltaTime)
@@ -35,6 +36,7 @@ void AMeasurementActor::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     FaceWidgetToCamera();
     FacePointLabelsToCamera();
+    FaceAngleLabelsToCamera();
     DrawSnapRadiusDebug();
     DrawClosingLine();
 }
@@ -73,12 +75,21 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     {
         UpdateMeasurementText();
         UpdatePointLabels();
+        UpdateAngleLabels();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bShowCumulativeLabels) ||
              PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, CumulativeLabelSize) ||
              PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, CumulativeLabelColor))
     {
         UpdatePointLabels();
+        UpdateMeasurementText();
+    }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bShowAngleLabels) ||
+             PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, AngleLabelSize) ||
+             PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, AngleLabelColor))
+    {
+        UpdateAngleLabels();
+        UpdateMeasurementText();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapMode) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapRadius) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, GroundTraceDistance) || PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, SnapTraceChannel))
     {
@@ -90,11 +101,13 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         ApplySplinePointType();
         UpdateMeasurementText();
         UpdatePointLabels();
+        UpdateAngleLabels();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, MeasurementMode))
     {
         UpdateMeasurementText();
         UpdatePointLabels();
+        UpdateAngleLabels();
     }
 }
 #endif
@@ -118,6 +131,7 @@ void AMeasurementActor::ResetSpline()
     ApplySplinePointType();
     UpdateMeasurementText();
     UpdatePointLabels();
+    UpdateAngleLabels();
 }
 
 void AMeasurementActor::ApplyManualSize()
@@ -132,28 +146,7 @@ void AMeasurementActor::ApplyManualSize()
     // In Area mode, ManualSize is a target area — convert to cm² and use sqrt scaling.
     if (MeasurementMode == EMeasurementMode::Area)
     {
-        float DesiredAreaCmSq = 0.0f;
-        switch (DisplayUnit)
-        {
-        case EMeasurementUnit::Centimeters:
-            DesiredAreaCmSq = ManualSize;
-            break;
-        case EMeasurementUnit::Meters:
-            DesiredAreaCmSq = ManualSize * 10000.0f;
-            break;
-        case EMeasurementUnit::Kilometers:
-            DesiredAreaCmSq = ManualSize * 1e10f;
-            break;
-        case EMeasurementUnit::Feet:
-            DesiredAreaCmSq = ManualSize * 929.0304f;
-            break;
-        case EMeasurementUnit::Inches:
-            DesiredAreaCmSq = ManualSize * 6.4516f;
-            break;
-        case EMeasurementUnit::Yards:
-            DesiredAreaCmSq = ManualSize * 8361.2736f;
-            break;
-        }
+        const float DesiredAreaCmSq = MeasurementUnitUtils::UnitSqToCmSq(ManualSize, DisplayUnit);
 
         const float CurrentArea = CalculateEnclosedArea();
         if (CurrentArea <= KINDA_SMALL_NUMBER)
@@ -179,30 +172,11 @@ void AMeasurementActor::ApplyManualSize()
         SplineComponent->UpdateSpline();
         UpdateMeasurementText();
         UpdatePointLabels();
+        UpdateAngleLabels();
         return;
     }
 
-    switch (DisplayUnit)
-    {
-    case EMeasurementUnit::Centimeters:
-        DesiredLengthCm = ManualSize;
-        break;
-    case EMeasurementUnit::Meters:
-        DesiredLengthCm = ManualSize * 100.0f;
-        break;
-    case EMeasurementUnit::Kilometers:
-        DesiredLengthCm = ManualSize * 100000.0f;
-        break;
-    case EMeasurementUnit::Feet:
-        DesiredLengthCm = ManualSize * 30.48f;
-        break;
-    case EMeasurementUnit::Inches:
-        DesiredLengthCm = ManualSize * 2.54f;
-        break;
-    case EMeasurementUnit::Yards:
-        DesiredLengthCm = ManualSize * 91.44f;
-        break;
-    }
+    DesiredLengthCm = MeasurementUnitUtils::UnitToCm(ManualSize, DisplayUnit);
 
     const float CurrentLength = SplineComponent->GetSplineLength();
 
@@ -229,6 +203,7 @@ void AMeasurementActor::ApplyManualSize()
     SplineComponent->UpdateSpline();
     UpdateMeasurementText();
     UpdatePointLabels();
+    UpdateAngleLabels();
 }
 
 void AMeasurementActor::ApplySplinePointType()
@@ -392,36 +367,8 @@ void AMeasurementActor::DrawSnapRadiusDebug() const
 
 FText AMeasurementActor::FormatDistance(float DistanceCm) const
 {
-    float DisplayValue = 0.0f;
-    FString UnitSuffix;
-
-    switch (DisplayUnit)
-    {
-    case EMeasurementUnit::Centimeters:
-        DisplayValue = DistanceCm;
-        UnitSuffix = TEXT("cm");
-        break;
-    case EMeasurementUnit::Meters:
-        DisplayValue = DistanceCm / 100.0f;
-        UnitSuffix = TEXT("m");
-        break;
-    case EMeasurementUnit::Kilometers:
-        DisplayValue = DistanceCm / 100000.0f;
-        UnitSuffix = TEXT("km");
-        break;
-    case EMeasurementUnit::Feet:
-        DisplayValue = DistanceCm / 30.48f;
-        UnitSuffix = TEXT("ft");
-        break;
-    case EMeasurementUnit::Inches:
-        DisplayValue = DistanceCm / 2.54f;
-        UnitSuffix = TEXT("in");
-        break;
-    case EMeasurementUnit::Yards:
-        DisplayValue = DistanceCm / 91.44f;
-        UnitSuffix = TEXT("yd");
-        break;
-    }
+    const float DisplayValue = MeasurementUnitUtils::CmToUnit(DistanceCm, DisplayUnit);
+    const FString UnitSuffix = MeasurementUnitUtils::GetUnitSuffix(DisplayUnit);
 
     FNumberFormattingOptions NumberFormat;
     NumberFormat.MinimumFractionalDigits = 2;
@@ -575,36 +522,8 @@ float AMeasurementActor::CalculateEnclosedArea() const
 
 FText AMeasurementActor::FormatArea(float AreaCmSq) const
 {
-    float DisplayValue = 0.0f;
-    FString UnitSuffix;
-
-    switch (DisplayUnit)
-    {
-    case EMeasurementUnit::Centimeters:
-        DisplayValue = AreaCmSq;
-        UnitSuffix = TEXT("cm\u00B2");
-        break;
-    case EMeasurementUnit::Meters:
-        DisplayValue = AreaCmSq / 10000.0f;
-        UnitSuffix = TEXT("m\u00B2");
-        break;
-    case EMeasurementUnit::Kilometers:
-        DisplayValue = AreaCmSq / 1e10f;
-        UnitSuffix = TEXT("km\u00B2");
-        break;
-    case EMeasurementUnit::Feet:
-        DisplayValue = AreaCmSq / 929.0304f;
-        UnitSuffix = TEXT("ft\u00B2");
-        break;
-    case EMeasurementUnit::Inches:
-        DisplayValue = AreaCmSq / 6.4516f;
-        UnitSuffix = TEXT("in\u00B2");
-        break;
-    case EMeasurementUnit::Yards:
-        DisplayValue = AreaCmSq / 8361.2736f;
-        UnitSuffix = TEXT("yd\u00B2");
-        break;
-    }
+    const float DisplayValue = MeasurementUnitUtils::CmSqToUnitSq(AreaCmSq, DisplayUnit);
+    const FString UnitSuffix = MeasurementUnitUtils::GetUnitSqSuffix(DisplayUnit);
 
     FNumberFormattingOptions NumberFormat;
     NumberFormat.MinimumFractionalDigits = 2;
@@ -639,4 +558,149 @@ void AMeasurementActor::DrawClosingLine() const
     const FVector LastPoint = SplineComponent->GetLocationAtSplinePoint(NumPoints - 1, ESplineCoordinateSpace::World);
 
     DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, false, -1.0f, SDPG_World, 2.0f);
+}
+
+float AMeasurementActor::CalculateAngleAtPoint(int32 Index) const
+{
+    if (!SplineComponent)
+    {
+        return 0.0f;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    if (NumPoints < 3)
+    {
+        return 0.0f;
+    }
+
+    const bool bClosed = (MeasurementMode == EMeasurementMode::Area);
+
+    int32 PrevIndex;
+    int32 NextIndex;
+
+    if (bClosed)
+    {
+        PrevIndex = (Index - 1 + NumPoints) % NumPoints;
+        NextIndex = (Index + 1) % NumPoints;
+    }
+    else
+    {
+        if (Index <= 0 || Index >= NumPoints - 1)
+        {
+            return 0.0f;
+        }
+        PrevIndex = Index - 1;
+        NextIndex = Index + 1;
+    }
+
+    const FVector Prev = SplineComponent->GetLocationAtSplinePoint(PrevIndex, ESplineCoordinateSpace::World);
+    const FVector Current = SplineComponent->GetLocationAtSplinePoint(Index, ESplineCoordinateSpace::World);
+    const FVector Next = SplineComponent->GetLocationAtSplinePoint(NextIndex, ESplineCoordinateSpace::World);
+
+    const FVector DirIn = (Current - Prev).GetSafeNormal();
+    const FVector DirOut = (Next - Current).GetSafeNormal();
+
+    if (DirIn.IsNearlyZero() || DirOut.IsNearlyZero())
+    {
+        return 0.0f;
+    }
+
+    const float Dot = FMath::Clamp(FVector::DotProduct(DirIn, DirOut), -1.0f, 1.0f);
+    return FMath::RadiansToDegrees(FMath::Acos(Dot));
+}
+
+void AMeasurementActor::UpdateAngleLabels()
+{
+    if (!SplineComponent)
+    {
+        return;
+    }
+
+    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
+    const bool bClosed = (MeasurementMode == EMeasurementMode::Area);
+
+    // Determine eligible point count
+    int32 DesiredCount = 0;
+    if (bShowAngleLabels && NumPoints >= 3)
+    {
+        DesiredCount = bClosed ? NumPoints : (NumPoints - 2);
+    }
+
+    // Remove excess components
+    while (AngleLabelComponents.Num() > DesiredCount)
+    {
+        UTextRenderComponent *Comp = AngleLabelComponents.Pop();
+        if (IsValid(Comp))
+        {
+            Comp->DestroyComponent();
+        }
+    }
+
+    // Create missing components
+    while (AngleLabelComponents.Num() < DesiredCount)
+    {
+        UTextRenderComponent *NewLabel = NewObject<UTextRenderComponent>(this);
+        NewLabel->SetupAttachment(SplineComponent);
+        NewLabel->RegisterComponent();
+        NewLabel->SetHorizontalAlignment(EHTA_Center);
+        NewLabel->SetVerticalAlignment(EVRTA_TextCenter);
+        AngleLabelComponents.Add(NewLabel);
+    }
+
+    // Update each label
+    FNumberFormattingOptions NumberFormat;
+    NumberFormat.MinimumFractionalDigits = 1;
+    NumberFormat.MaximumFractionalDigits = 1;
+
+    for (int32 LabelIdx = 0; LabelIdx < DesiredCount; ++LabelIdx)
+    {
+        UTextRenderComponent *Label = AngleLabelComponents[LabelIdx];
+        if (!IsValid(Label))
+        {
+            continue;
+        }
+
+        // Map label index to spline point index
+        const int32 PointIdx = bClosed ? LabelIdx : (LabelIdx + 1);
+
+        const FVector PointLocation = SplineComponent->GetLocationAtSplinePoint(PointIdx, ESplineCoordinateSpace::Local);
+        Label->SetRelativeLocation(PointLocation + FVector(0.0f, 0.0f, AngleLabelZOffset));
+
+        const float Angle = CalculateAngleAtPoint(PointIdx);
+        const FText AngleText = FText::Format(
+            NSLOCTEXT("MeasurementActor", "AngleFmt", "{0}\u00B0"),
+            FText::AsNumber(Angle, &NumberFormat));
+
+        Label->SetText(AngleText);
+        Label->SetWorldSize(AngleLabelSize);
+        Label->SetTextRenderColor(AngleLabelColor);
+    }
+}
+
+void AMeasurementActor::FaceAngleLabelsToCamera()
+{
+    if (!bShowAngleLabels || AngleLabelComponents.Num() == 0)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World || World->ViewLocationsRenderedLastFrame.Num() == 0)
+    {
+        return;
+    }
+
+    const FVector CameraLocation = World->ViewLocationsRenderedLastFrame[0];
+
+    for (UTextRenderComponent *Label : AngleLabelComponents)
+    {
+        if (!IsValid(Label))
+        {
+            continue;
+        }
+
+        const FVector LabelLocation = Label->GetComponentLocation();
+        const FVector Direction = CameraLocation - LabelLocation;
+        Label->SetWorldRotation(Direction.Rotation());
+    }
 }

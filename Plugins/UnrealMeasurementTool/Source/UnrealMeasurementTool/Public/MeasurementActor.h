@@ -117,10 +117,34 @@ protected:
 			  meta = (DisplayName = "Label Color", EditCondition = "bShowCumulativeLabels"))
 	FColor CumulativeLabelColor = FColor::White;
 
+	// --- Angle Labels ---
+
+	/** When enabled, displays the angle between consecutive segments at each spline point. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
+			  meta = (DisplayName = "Show Angle Labels"))
+	bool bShowAngleLabels = false;
+
+	/** World-size of the angle label text. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
+			  meta = (DisplayName = "Label Size", ClampMin = "1.0", EditCondition = "bShowAngleLabels"))
+	float AngleLabelSize = 24.0f;
+
+	/** Color of the angle label text. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
+			  meta = (DisplayName = "Label Color", EditCondition = "bShowAngleLabels"))
+	FColor AngleLabelColor = FColor::Yellow;
+
 private:
 	/** Dynamic array of text render components, one per spline point. */
 	UPROPERTY()
 	TArray<TObjectPtr<UTextRenderComponent>> PointLabelComponents;
+
+	/** Dynamic array of text render components for angle labels. */
+	UPROPERTY()
+	TArray<TObjectPtr<UTextRenderComponent>> AngleLabelComponents;
+
+	/** Vertical offset (Z) for angle labels above the spline point. */
+	float AngleLabelZOffset = 30.0f;
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */
 	void UpdateMeasurementText();
 
@@ -158,4 +182,13 @@ private:
 
 	/** Rotates all point label components to face the camera. */
 	void FacePointLabelsToCamera();
+
+	/** Creates / destroys / updates angle labels at each eligible spline point. */
+	void UpdateAngleLabels();
+
+	/** Rotates all angle label components to face the camera. */
+	void FaceAngleLabelsToCamera();
+
+	/** Returns the angle in degrees between the two segments meeting at the given spline point. */
+	float CalculateAngleAtPoint(int32 Index) const;
 };
