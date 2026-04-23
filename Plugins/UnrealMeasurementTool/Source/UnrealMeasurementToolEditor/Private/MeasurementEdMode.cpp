@@ -77,13 +77,25 @@ AMeasurementActor *FMeasurementEdMode::SpawnMeasurementActor()
     if (!World)
         return nullptr;
 
-    // Spawn 500 units in front of the active editor viewport camera
+    // Spawn in front of the active editor viewport camera.
+    // If a surface is hit between the camera and the default distance, place on that surface instead.
     FVector SpawnLocation = FVector::ZeroVector;
     if (GCurrentLevelEditingViewportClient)
     {
         const FVector CamLoc = GCurrentLevelEditingViewportClient->GetViewLocation();
         const FRotator CamRot = GCurrentLevelEditingViewportClient->GetViewRotation();
-        SpawnLocation = CamLoc + CamRot.Vector() * 500.0f;
+        const FVector DefaultLocation = CamLoc + CamRot.Vector() * 500.0f;
+
+        FHitResult HitResult;
+        FCollisionQueryParams QueryParams(SCENE_QUERY_STAT(MeasurementSpawn), true);
+        if (World->LineTraceSingleByChannel(HitResult, CamLoc, DefaultLocation, ECC_Visibility, QueryParams))
+        {
+            SpawnLocation = HitResult.ImpactPoint;
+        }
+        else
+        {
+            SpawnLocation = DefaultLocation;
+        }
     }
 
     // Load the Blueprint class on first use
