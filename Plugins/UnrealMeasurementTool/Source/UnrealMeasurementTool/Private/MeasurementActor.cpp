@@ -33,9 +33,13 @@ AMeasurementActor::AMeasurementActor()
 void AMeasurementActor::OnConstruction(const FTransform &Transform)
 {
     Super::OnConstruction(Transform);
-    SnapComponent->SnapPoints(SplineComponent);
+
+    if (!bIsProcessingSnap)
+    {
+        bSnapDirty = true;
+    }
+
     ApplySplinePointType();
-    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     UpdateMeasurementText();
     EnsureBillboardTimer();
 }
@@ -56,6 +60,8 @@ void AMeasurementActor::EnsureBillboardTimer()
 
 void AMeasurementActor::UpdateBillboard()
 {
+    ProcessDeferredSnap();
+
     FVector CameraLocation;
     if (UMeasurementCalculator::GetActiveCameraLocation(GetWorld(), CameraLocation))
     {
@@ -68,6 +74,23 @@ void AMeasurementActor::UpdateBillboard()
         SnapComponent->DrawDebugVisualization(SplineComponent);
         DrawClosingLine();
     }
+}
+
+void AMeasurementActor::ProcessDeferredSnap()
+{
+    if (!bSnapDirty)
+    {
+        return;
+    }
+
+    bSnapDirty = false;
+    bIsProcessingSnap = true;
+
+    SnapComponent->SnapPoints(SplineComponent);
+    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+    UpdateMeasurementText();
+
+    bIsProcessingSnap = false;
 }
 
 #if WITH_EDITOR

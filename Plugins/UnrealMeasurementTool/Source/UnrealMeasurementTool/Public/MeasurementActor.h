@@ -93,8 +93,17 @@ private:
 	/** Timer handle for the periodic billboard + debug-draw update. */
 	FTimerHandle BillboardTimerHandle;
 
+	/** True when snap/labels need to be recalculated (set by OnConstruction, cleared by timer). */
+	bool bSnapDirty = false;
+
+	/** Re-entry guard: prevents OnConstruction from re-dirtying while snap is running. */
+	bool bIsProcessingSnap = false;
+
 	/** Timer callback: rotates widget/labels to face camera, redraws dirty debug lines. */
 	void UpdateBillboard();
+
+	/** Runs deferred SnapPoints + UpdateLabels when bSnapDirty is set. */
+	void ProcessDeferredSnap();
 
 	/** Starts the billboard timer if it is not already running. */
 	void EnsureBillboardTimer();
