@@ -29,6 +29,7 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     UpdatePointLabels();
     UpdateAngleLabels();
     UpdateMeasurementText();
+    bDebugDrawDirty = true;
 }
 
 void AMeasurementActor::Tick(float DeltaTime)
@@ -37,8 +38,18 @@ void AMeasurementActor::Tick(float DeltaTime)
     FaceWidgetToCamera();
     FacePointLabelsToCamera();
     FaceAngleLabelsToCamera();
-    DrawSnapRadiusDebug();
-    DrawClosingLine();
+
+    if (bDebugDrawDirty)
+    {
+        UWorld *World = GetWorld();
+        if (World)
+        {
+            FlushPersistentDebugLines(World);
+        }
+        DrawSnapRadiusDebug();
+        DrawClosingLine();
+        bDebugDrawDirty = false;
+    }
 }
 
 void AMeasurementActor::FaceWidgetToCamera()
@@ -109,6 +120,8 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         UpdatePointLabels();
         UpdateAngleLabels();
     }
+
+    bDebugDrawDirty = true;
 }
 #endif
 
@@ -132,6 +145,7 @@ void AMeasurementActor::ResetSpline()
     UpdateMeasurementText();
     UpdatePointLabels();
     UpdateAngleLabels();
+    bDebugDrawDirty = true;
 }
 
 void AMeasurementActor::ApplyManualSize()
@@ -173,6 +187,7 @@ void AMeasurementActor::ApplyManualSize()
         UpdateMeasurementText();
         UpdatePointLabels();
         UpdateAngleLabels();
+        bDebugDrawDirty = true;
         return;
     }
 
@@ -204,6 +219,7 @@ void AMeasurementActor::ApplyManualSize()
     UpdateMeasurementText();
     UpdatePointLabels();
     UpdateAngleLabels();
+    bDebugDrawDirty = true;
 }
 
 void AMeasurementActor::ApplySplinePointType()
@@ -361,7 +377,7 @@ void AMeasurementActor::DrawSnapRadiusDebug() const
     for (int32 i = 0; i < NumPoints; ++i)
     {
         const FVector WorldPt = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
-        DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, false, -1.0f, SDPG_World, 1.0f);
+        DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, true, -1.0f, SDPG_World, 1.0f);
     }
 }
 
@@ -557,7 +573,7 @@ void AMeasurementActor::DrawClosingLine() const
     const FVector FirstPoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
     const FVector LastPoint = SplineComponent->GetLocationAtSplinePoint(NumPoints - 1, ESplineCoordinateSpace::World);
 
-    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, false, -1.0f, SDPG_World, 2.0f);
+    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, true, -1.0f, SDPG_World, 2.0f);
 }
 
 float AMeasurementActor::CalculateAngleAtPoint(int32 Index) const

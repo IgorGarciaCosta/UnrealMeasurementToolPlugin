@@ -143,6 +143,9 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<UTextRenderComponent>> AngleLabelComponents;
 
+	/** When true, persistent debug draws (snap radius, closing line) need to be redrawn. */
+	bool bDebugDrawDirty = true;
+
 	/** Vertical offset (Z) for angle labels above the spline point. */
 	float AngleLabelZOffset = 30.0f;
 	/** Reads spline length, converts to meters, and sends to the widget via interface. */

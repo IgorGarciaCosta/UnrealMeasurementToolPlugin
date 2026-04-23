@@ -16,7 +16,7 @@ static_assert(!UE_WITH_CONSTINIT_UOBJECT, "This generated code can only be compi
 			"/Script/UnrealMeasurementTool",
 			nullptr,
 			0,
-			PKG_CompiledIn | 0x00000000,
+			PKG_CompiledIn | 0x00000040,
 			0x842B8C86,
 			0x15596130,
 			METADATA_PARAMS(0, nullptr)
