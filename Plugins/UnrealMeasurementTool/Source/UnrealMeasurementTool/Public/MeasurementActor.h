@@ -8,8 +8,9 @@
 #include "MeasurementActor.generated.h"
 
 class USplineComponent;
-class UTextRenderComponent;
 class UWidgetComponent;
+class UMeasurementSnapComponent;
+class UMeasurementLabelComponent;
 
 /**
  * Actor that uses a SplineComponent to measure distance and displays
@@ -18,6 +19,10 @@ class UWidgetComponent;
  * Communication with the widget is fully decoupled via
  * IMeasurementTxtWgtCommunicationInterface – the actor never references
  * the concrete widget class.
+ *
+ * Snap logic is delegated to UMeasurementSnapComponent.
+ * Label management is delegated to UMeasurementLabelComponent.
+ * Calculations / formatting live in UMeasurementCalculator.
  *
  * The measurement updates in the editor when spline points are moved
  * (OnConstruction). No Tick overhead at runtime.
@@ -45,6 +50,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
 	TObjectPtr<UWidgetComponent> WidgetComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
+	TObjectPtr<UMeasurementSnapComponent> SnapComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Measurement")
+	TObjectPtr<UMeasurementLabelComponent> LabelComponent;
+
 	/** Resets the spline to its default state (2 points), clears rotation and scale. */
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Reset"))
 	void ResetSpline();
@@ -61,7 +72,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size", ClampMin = "0.01"))
 	float ManualSize = 1.0f;
 
-	/** Rescales the spline so its total length matches ManualSizeMeters. */
+	/** Rescales the spline so its total length matches ManualSize in the current unit. */
 	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))
 	void ApplyManualSize();
 
@@ -74,124 +85,19 @@ protected:
 			  meta = (DisplayName = "Show Closing Line", EditCondition = "MeasurementMode == EMeasurementMode::Area"))
 	bool bShowClosingLine = true;
 
-	// --- Snap Settings ---
-
-	/** How spline points should snap to geometry. */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control")
-	ESnapMode SnapMode = ESnapMode::None;
-
-	/** Maximum distance to search for surfaces (SurfaceSnap only). */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control",
-			  meta = (EditCondition = "SnapMode == ESnapMode::SurfaceSnap", ClampMin = "1.0"))
-	float SnapRadius = 50.0f;
-
-	/** Maximum downward trace distance (GroundSnap only). */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control",
-			  meta = (EditCondition = "SnapMode == ESnapMode::GroundSnap", ClampMin = "1.0"))
-	float GroundTraceDistance = 10000.0f;
-
-	/** Collision channel used for snap traces. */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control",
-			  meta = (EditCondition = "SnapMode != ESnapMode::None"))
-	TEnumAsByte<ECollisionChannel> SnapTraceChannel = ECC_WorldStatic;
-
-	/** Show debug spheres to visualize SnapRadius around each spline point. */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control",
-			  meta = (EditCondition = "SnapMode == ESnapMode::SurfaceSnap", DisplayName = "Show Snap Radius"))
-	bool bShowSnapRadius = false;
-
-	// --- Cumulative Labels ---
-
-	/** When enabled, displays the accumulated distance at each spline point. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
-			  meta = (DisplayName = "Show Cumulative Labels"))
-	bool bShowCumulativeLabels = false;
-
-	/** World-size of the cumulative label text. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
-			  meta = (DisplayName = "Label Size", ClampMin = "1.0", EditCondition = "bShowCumulativeLabels"))
-	float CumulativeLabelSize = 24.0f;
-
-	/** Color of the cumulative label text. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
-			  meta = (DisplayName = "Label Color", EditCondition = "bShowCumulativeLabels"))
-	FColor CumulativeLabelColor = FColor::White;
-
-	// --- Angle Labels ---
-
-	/** When enabled, displays the angle between consecutive segments at each spline point. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
-			  meta = (DisplayName = "Show Angle Labels"))
-	bool bShowAngleLabels = false;
-
-	/** World-size of the angle label text. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
-			  meta = (DisplayName = "Label Size", ClampMin = "1.0", EditCondition = "bShowAngleLabels"))
-	float AngleLabelSize = 24.0f;
-
-	/** Color of the angle label text. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
-			  meta = (DisplayName = "Label Color", EditCondition = "bShowAngleLabels"))
-	FColor AngleLabelColor = FColor::Yellow;
-
 private:
-	/** Dynamic array of text render components, one per spline point. */
-	UPROPERTY()
-	TArray<TObjectPtr<UTextRenderComponent>> PointLabelComponents;
-
-	/** Dynamic array of text render components for angle labels. */
-	UPROPERTY()
-	TArray<TObjectPtr<UTextRenderComponent>> AngleLabelComponents;
-
 	/** When true, persistent debug draws (snap radius, closing line) need to be redrawn. */
 	bool bDebugDrawDirty = true;
 
-	/** Vertical offset (Z) for angle labels above the spline point. */
-	float AngleLabelZOffset = 30.0f;
-	/** Reads spline length, converts to meters, and sends to the widget via interface. */
+	/** Reads spline length / area, formats it, and sends to the widget via interface. */
 	void UpdateMeasurementText();
-
-	/** Rotates the widget to always face the camera (billboard). */
-	void FaceWidgetToCamera();
-
-	/** Snaps all spline points to geometry based on SnapMode. */
-	void SnapSplinePoints();
 
 	/** Sets all spline points to Linear or Curve based on bLinearSpline. */
 	void ApplySplinePointType();
 
-	/** Finds the nearest surface hit within a sphere around Origin using cardinal-direction traces. */
-	bool FindNearestSurface(UWorld *World, const FVector &Origin, float Radius,
-							ECollisionChannel Channel, const FCollisionQueryParams &Params,
-							FHitResult &OutHit) const;
-
-	/** Draws debug spheres around each spline point to visualize SnapRadius. */
-	void DrawSnapRadiusDebug() const;
-
-	/** Creates / destroys / updates cumulative distance labels at each spline point. */
-	void UpdatePointLabels();
-
-	/** Converts a distance in centimeters to the current DisplayUnit and appends the suffix. */
-	FText FormatDistance(float DistanceCm) const;
-
-	/** Calculates the enclosed area (cm²) of the polygon formed by spline points. */
-	float CalculateEnclosedArea() const;
-
-	/** Converts an area in cm² to the current DisplayUnit² and formats it as text. */
-	FText FormatArea(float AreaCmSq) const;
-
 	/** Draws a debug closing line from last spline point to first (Area mode). */
 	void DrawClosingLine() const;
 
-	/** Rotates all point label components to face the camera. */
-	void FacePointLabelsToCamera();
-
-	/** Creates / destroys / updates angle labels at each eligible spline point. */
-	void UpdateAngleLabels();
-
-	/** Rotates all angle label components to face the camera. */
-	void FaceAngleLabelsToCamera();
-
-	/** Returns the angle in degrees between the two segments meeting at the given spline point. */
-	float CalculateAngleAtPoint(int32 Index) const;
+	/** Collects world-space positions of all spline points into an array. */
+	TArray<FVector> GetSplineWorldPoints() const;
 };

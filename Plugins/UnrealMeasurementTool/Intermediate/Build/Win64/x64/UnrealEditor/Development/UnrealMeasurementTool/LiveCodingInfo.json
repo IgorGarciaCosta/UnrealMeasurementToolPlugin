@@ -3,6 +3,9 @@
 	{
 		"Module.UnrealMeasurementTool.cpp.obj": [
 			"MeasurementActor.gen.cpp.obj",
+			"MeasurementCalculator.gen.cpp.obj",
+			"MeasurementLabelComponent.gen.cpp.obj",
+			"MeasurementSnapComponent.gen.cpp.obj",
 			"MeasurementTextWidget.gen.cpp.obj",
 			"MeasurementTxtWgtCommunicationInterface.gen.cpp.obj",
 			"MeasurementUnit.gen.cpp.obj",
@@ -11,7 +14,10 @@
 			"MeasurementTextWidget.cpp.obj",
 			"MeasurementTxtWgtCommunicationInterface.cpp.obj",
 			"UnrealMeasurementTool.cpp.obj",
-			"MeasurementActor.cpp.obj"
+			"MeasurementActor.cpp.obj",
+			"MeasurementCalculator.cpp.obj",
+			"MeasurementLabelComponent.cpp.obj",
+			"MeasurementSnapComponent.cpp.obj"
 		]
 	}
 }
