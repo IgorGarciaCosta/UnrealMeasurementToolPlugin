@@ -10,6 +10,14 @@ UMeasurementLabelComponent::UMeasurementLabelComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+#if WITH_EDITOR
+void UMeasurementLabelComponent::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+    OnPropertiesChanged.Broadcast();
+}
+#endif
+
 void UMeasurementLabelComponent::UpdateLabels(USplineComponent *Spline, EMeasurementMode Mode, EMeasurementUnit Unit)
 {
     UpdatePointLabels(Spline, Unit);

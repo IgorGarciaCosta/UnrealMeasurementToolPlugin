@@ -13,6 +13,8 @@ class USplineComponent;
  * Component that handles snapping spline points to geometry.
  * Supports ground snap (trace down) and nearest surface snap (cardinal traces).
  */
+DECLARE_MULTICAST_DELEGATE(FOnMeasurementSnapChanged);
+
 UCLASS(ClassGroup = (Measurement), meta = (BlueprintSpawnableComponent))
 class UNREALMEASUREMENTTOOL_API UMeasurementSnapComponent : public UActorComponent
 {
@@ -20,6 +22,13 @@ class UNREALMEASUREMENTTOOL_API UMeasurementSnapComponent : public UActorCompone
 
 public:
     UMeasurementSnapComponent();
+
+#if WITH_EDITOR
+    virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+
+    /** Broadcast when any snap property changes in the editor. */
+    FOnMeasurementSnapChanged OnPropertiesChanged;
+#endif
 
     /** How spline points should snap to geometry. */
     UPROPERTY(EditAnywhere, Category = "Measurement Control")

@@ -9,6 +9,14 @@ UMeasurementSnapComponent::UMeasurementSnapComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+#if WITH_EDITOR
+void UMeasurementSnapComponent::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+    OnPropertiesChanged.Broadcast();
+}
+#endif
+
 void UMeasurementSnapComponent::SnapPoints(USplineComponent *Spline)
 {
     if (SnapMode == ESnapMode::None || !IsValid(Spline))

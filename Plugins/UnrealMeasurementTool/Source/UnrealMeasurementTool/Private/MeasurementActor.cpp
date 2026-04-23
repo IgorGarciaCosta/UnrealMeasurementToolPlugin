@@ -23,6 +23,11 @@ AMeasurementActor::AMeasurementActor()
 
     SnapComponent = CreateDefaultSubobject<UMeasurementSnapComponent>(TEXT("SnapComponent"));
     LabelComponent = CreateDefaultSubobject<UMeasurementLabelComponent>(TEXT("LabelComponent"));
+
+#if WITH_EDITOR
+    SnapComponent->OnPropertiesChanged.AddUObject(this, &AMeasurementActor::OnSnapPropertiesChanged);
+    LabelComponent->OnPropertiesChanged.AddUObject(this, &AMeasurementActor::OnLabelPropertiesChanged);
+#endif
 }
 
 void AMeasurementActor::OnConstruction(const FTransform &Transform)
@@ -81,24 +86,6 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         UpdateMeasurementText();
         LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     }
-    else if (PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, bShowCumulativeLabels) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, CumulativeLabelSize) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, CumulativeLabelColor) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, bShowAngleLabels) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, AngleLabelSize) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementLabelComponent, AngleLabelColor))
-    {
-        LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
-        UpdateMeasurementText();
-    }
-    else if (PropName == GET_MEMBER_NAME_CHECKED(UMeasurementSnapComponent, SnapMode) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementSnapComponent, SnapRadius) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementSnapComponent, GroundTraceDistance) ||
-             PropName == GET_MEMBER_NAME_CHECKED(UMeasurementSnapComponent, SnapTraceChannel))
-    {
-        SnapComponent->SnapPoints(SplineComponent);
-        UpdateMeasurementText();
-    }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bLinearSpline))
     {
         ApplySplinePointType();
@@ -110,6 +97,18 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         UpdateMeasurementText();
         LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     }
+}
+
+void AMeasurementActor::OnLabelPropertiesChanged()
+{
+    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+    UpdateMeasurementText();
+}
+
+void AMeasurementActor::OnSnapPropertiesChanged()
+{
+    SnapComponent->SnapPoints(SplineComponent);
+    UpdateMeasurementText();
 }
 #endif
 

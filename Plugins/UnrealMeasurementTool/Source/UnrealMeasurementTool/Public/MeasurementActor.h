@@ -41,6 +41,10 @@ public:
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+
+private:
+	void OnLabelPropertiesChanged();
+	void OnSnapPropertiesChanged();
 #endif
 
 protected:

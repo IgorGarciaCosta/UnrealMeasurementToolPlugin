@@ -15,6 +15,8 @@ class UTextRenderComponent;
  * along a spline. Handles creation, destruction, positioning, formatting,
  * and billboard (face-camera) rotation of UTextRenderComponents.
  */
+DECLARE_MULTICAST_DELEGATE(FOnMeasurementLabelChanged);
+
 UCLASS(ClassGroup = (Measurement), meta = (BlueprintSpawnableComponent))
 class UNREALMEASUREMENTTOOL_API UMeasurementLabelComponent : public UActorComponent
 {
@@ -22,6 +24,13 @@ class UNREALMEASUREMENTTOOL_API UMeasurementLabelComponent : public UActorCompon
 
 public:
     UMeasurementLabelComponent();
+
+#if WITH_EDITOR
+    virtual void PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent) override;
+
+    /** Broadcast when any label property changes in the editor. */
+    FOnMeasurementLabelChanged OnPropertiesChanged;
+#endif
 
     // --- Cumulative Labels ---
 
