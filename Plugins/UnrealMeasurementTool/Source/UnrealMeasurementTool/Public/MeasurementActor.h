@@ -86,9 +86,6 @@ protected:
 	bool bShowClosingLine = true;
 
 private:
-	/** When true, persistent debug draws (snap radius, closing line) need to be redrawn. */
-	bool bDebugDrawDirty = true;
-
 	/** Timer handle for the periodic billboard + debug-draw update. */
 	FTimerHandle BillboardTimerHandle;
 

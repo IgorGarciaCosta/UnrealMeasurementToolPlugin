@@ -4,7 +4,6 @@
 #include "MeasurementEdModeToolkit.h"
 #include "MeasurementActor.h"
 #include "EngineUtils.h"
-#include "DrawDebugHelpers.h"
 #include "Editor.h"
 #include "EditorModeManager.h"
 #include "Engine/Selection.h"
@@ -36,14 +35,11 @@ void FMeasurementEdMode::Enter()
 
 void FMeasurementEdMode::Exit()
 {
-    SetAllMeasurementActorsVisible(false);
+    // Deselect any measurement actors first — the editor renders selected
+    // actors' components (splines, widgets) even when hidden.
+    GEditor->SelectNone(true, true);
 
-    // Flush persistent debug lines (snap radius spheres, closing lines) so they
-    // don't linger in the viewport after the mode is deactivated.
-    if (UWorld *World = GetWorld())
-    {
-        FlushPersistentDebugLines(World);
-    }
+    SetAllMeasurementActorsVisible(false);
 
     SelectedActor.Reset();
     Toolkit.Reset();

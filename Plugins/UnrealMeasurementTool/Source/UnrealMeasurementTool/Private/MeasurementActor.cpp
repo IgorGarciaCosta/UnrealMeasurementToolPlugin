@@ -32,7 +32,6 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     ApplySplinePointType();
     LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     UpdateMeasurementText();
-    bDebugDrawDirty = true;
     EnsureBillboardTimer();
 }
 
@@ -59,16 +58,10 @@ void AMeasurementActor::UpdateBillboard()
         LabelComponent->FaceLabelsToCamera(CameraLocation);
     }
 
-    if (bDebugDrawDirty)
+    if (!IsTemporarilyHiddenInEditor())
     {
-        UWorld *World = GetWorld();
-        if (World)
-        {
-            FlushPersistentDebugLines(World);
-        }
         SnapComponent->DrawDebugVisualization(SplineComponent);
         DrawClosingLine();
-        bDebugDrawDirty = false;
     }
 }
 
@@ -117,8 +110,6 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
         UpdateMeasurementText();
         LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
     }
-
-    bDebugDrawDirty = true;
 }
 #endif
 
@@ -141,7 +132,6 @@ void AMeasurementActor::ResetSpline()
     ApplySplinePointType();
     UpdateMeasurementText();
     LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
-    bDebugDrawDirty = true;
 }
 
 void AMeasurementActor::ApplyManualSize()
@@ -196,7 +186,6 @@ void AMeasurementActor::ApplyManualSize()
     SplineComponent->UpdateSpline();
     UpdateMeasurementText();
     LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
-    bDebugDrawDirty = true;
 }
 
 void AMeasurementActor::ApplySplinePointType()
@@ -274,7 +263,7 @@ void AMeasurementActor::DrawClosingLine() const
     const FVector FirstPoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
     const FVector LastPoint = SplineComponent->GetLocationAtSplinePoint(NumPoints - 1, ESplineCoordinateSpace::World);
 
-    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, true, -1.0f, SDPG_World, 2.0f);
+    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, false, 0.15f, SDPG_World, 2.0f);
 }
 
 TArray<FVector> AMeasurementActor::GetSplineWorldPoints() const
