@@ -262,7 +262,7 @@ void UMeasurementLabelComponent::DrawAngleArcs(USplineComponent *Spline, EMeasur
                 FMath::RadiansToDegrees(AngleRad) * t, Axis);
             const FVector NextPoint = Current + RotatedDir * AngleArcRadius;
 
-            DrawDebugLine(World, PrevPoint, NextPoint, AngleArcColor, false, 0.15f, SDPG_World, 1.5f);
+            DrawDebugLine(World, PrevPoint, NextPoint, AngleArcColor, true, -1.0f, SDPG_World, 1.5f);
             PrevPoint = NextPoint;
         }
     }

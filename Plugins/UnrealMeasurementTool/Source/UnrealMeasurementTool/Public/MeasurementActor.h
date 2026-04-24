@@ -104,8 +104,17 @@ private:
 	/** Re-entry guard: prevents OnConstruction from re-dirtying while snap is running. */
 	bool bIsProcessingSnap = false;
 
+	/** True when debug visualisation needs to be redrawn (persistent lines). */
+	bool bDebugDrawDirty = false;
+
+	/** Tracks hidden state so we can flush persistent lines on hide transition. */
+	bool bWasHiddenLastFrame = false;
+
 	/** Timer callback: rotates widget/labels to face camera, redraws dirty debug lines. */
 	void UpdateBillboard();
+
+	/** Flushes all persistent debug lines owned by this world. */
+	void FlushDebugDraws() const;
 
 	/** Runs deferred SnapPoints + UpdateLabels when bSnapDirty is set. */
 	void ProcessDeferredSnap();

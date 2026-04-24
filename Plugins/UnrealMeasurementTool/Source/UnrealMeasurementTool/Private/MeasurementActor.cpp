@@ -37,16 +37,17 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     if (!bIsProcessingSnap)
     {
         bSnapDirty = true;
+        bDebugDrawDirty = true;
     }
 
     ApplySplinePointType();
-    UpdateMeasurementText();
     EnsureBillboardTimer();
 }
 
 void AMeasurementActor::Destroyed()
 {
     GetWorldTimerManager().ClearTimer(BillboardTimerHandle);
+    FlushDebugDraws();
     Super::Destroyed();
 }
 
@@ -75,8 +76,17 @@ void AMeasurementActor::UpdateBillboard()
         WidgetComponent->SetRelativeScale3D(FVector(WidgetScale));
     }
 
-    if (!IsTemporarilyHiddenInEditor())
+    const bool bHiddenNow = IsTemporarilyHiddenInEditor();
+    if (bHiddenNow && !bWasHiddenLastFrame)
     {
+        FlushDebugDraws();
+    }
+    bWasHiddenLastFrame = bHiddenNow;
+
+    if (!bHiddenNow && bDebugDrawDirty)
+    {
+        bDebugDrawDirty = false;
+        FlushDebugDraws();
         SnapComponent->DrawDebugVisualization(SplineComponent);
         DrawClosingLine();
         LabelComponent->DrawAngleArcs(SplineComponent, MeasurementMode);
@@ -104,6 +114,7 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
+    bDebugDrawDirty = true;
     const FName PropName = PropertyChangedEvent.GetPropertyName();
 
     if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSize))
@@ -131,13 +142,15 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
 
 void AMeasurementActor::OnLabelPropertiesChanged()
 {
+    bDebugDrawDirty = true;
     RefreshMeasurement();
 }
 
 void AMeasurementActor::OnSnapPropertiesChanged()
 {
+    bDebugDrawDirty = true;
     SnapComponent->SnapPoints(SplineComponent);
-    UpdateMeasurementText();
+    RefreshMeasurement();
 }
 #endif
 
@@ -147,6 +160,8 @@ void AMeasurementActor::ResetSpline()
     {
         return;
     }
+
+    bDebugDrawDirty = true;
 
     // Reset actor rotation and scale, keep location
     SetActorRotation(FRotator::ZeroRotator);
@@ -167,6 +182,8 @@ void AMeasurementActor::ApplyManualSize()
     {
         return;
     }
+
+    bDebugDrawDirty = true;
 
     float ScaleFactor = 1.0f;
 
@@ -296,7 +313,7 @@ void AMeasurementActor::DrawClosingLine() const
     const FVector FirstPoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
     const FVector LastPoint = SplineComponent->GetLocationAtSplinePoint(NumPoints - 1, ESplineCoordinateSpace::World);
 
-    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, false, 0.15f, SDPG_World, 2.0f);
+    DrawDebugLine(World, LastPoint, FirstPoint, FColor::Yellow, true, -1.0f, SDPG_World, 2.0f);
 }
 
 TArray<FVector> AMeasurementActor::GetSplineWorldPoints() const
@@ -315,4 +332,13 @@ TArray<FVector> AMeasurementActor::GetSplineWorldPoints() const
     }
 
     return Points;
+}
+
+void AMeasurementActor::FlushDebugDraws() const
+{
+    UWorld *World = GetWorld();
+    if (World)
+    {
+        FlushPersistentDebugLines(World);
+    }
 }

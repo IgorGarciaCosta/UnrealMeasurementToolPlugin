@@ -120,6 +120,6 @@ void UMeasurementSnapComponent::DrawDebugVisualization(const USplineComponent *S
     for (int32 i = 0; i < NumPoints; ++i)
     {
         const FVector WorldPt = Spline->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
-        DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, false, 0.15f, SDPG_World, 1.0f);
+        DrawDebugSphere(World, WorldPt, SnapRadius, 16, FColor::Cyan, true, -1.0f, SDPG_World, 1.0f);
     }
 }
