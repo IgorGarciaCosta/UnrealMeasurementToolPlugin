@@ -6,6 +6,7 @@
 #include "EditorModeRegistry.h"
 #include "EngineUtils.h"
 #include "Editor.h"
+#include "Styling/AppStyle.h"
 
 #define LOCTEXT_NAMESPACE "FUnrealMeasurementToolEditorModule"
 
@@ -14,7 +15,7 @@ void FUnrealMeasurementToolEditorModule::StartupModule()
     FEditorModeRegistry::Get().RegisterMode<FMeasurementEdMode>(
         FMeasurementEdMode::EM_MeasurementModeID,
         LOCTEXT("MeasurementModeName", "Measurement"),
-        FSlateIcon(),
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "EditorViewport.ScaleMode"),
         true);
 
     // Hide all measurement actors whenever a map is opened (before the mode is activated)

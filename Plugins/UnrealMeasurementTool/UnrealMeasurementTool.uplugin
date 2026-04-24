@@ -2,10 +2,10 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "Unreal Measurement Tool",
-	"Description": "A spline-based measurement tool that displays distance via a decoupled widget interface.",
+	"FriendlyName": "Professional Measurement Tool",
+	"Description": "A spline-based measurement tool that displays distance and area via a decoupled widget interface.",
 	"Category": "Tools",
-	"CreatedBy": "",
+	"CreatedBy": "Igor Garcia",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
@@ -24,5 +24,6 @@
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"
 		}
-	]
+	],
+	"SupportURL": ""
 }
