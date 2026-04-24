@@ -73,6 +73,7 @@ void AMeasurementActor::UpdateBillboard()
     {
         SnapComponent->DrawDebugVisualization(SplineComponent);
         DrawClosingLine();
+        LabelComponent->DrawAngleArcs(SplineComponent, MeasurementMode);
     }
 }
 
@@ -87,8 +88,7 @@ void AMeasurementActor::ProcessDeferredSnap()
     bIsProcessingSnap = true;
 
     SnapComponent->SnapPoints(SplineComponent);
-    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
-    UpdateMeasurementText();
+    RefreshMeasurement();
 
     bIsProcessingSnap = false;
 }
@@ -106,26 +106,22 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
     {
-        UpdateMeasurementText();
-        LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+        RefreshMeasurement();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, bLinearSpline))
     {
         ApplySplinePointType();
-        UpdateMeasurementText();
-        LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+        RefreshMeasurement();
     }
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, MeasurementMode))
     {
-        UpdateMeasurementText();
-        LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+        RefreshMeasurement();
     }
 }
 
 void AMeasurementActor::OnLabelPropertiesChanged()
 {
-    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
-    UpdateMeasurementText();
+    RefreshMeasurement();
 }
 
 void AMeasurementActor::OnSnapPropertiesChanged()
@@ -152,8 +148,7 @@ void AMeasurementActor::ResetSpline()
     SplineComponent->AddSplinePoint(FVector(100.f, 0.f, 0.f), ESplineCoordinateSpace::Local, true);
 
     ApplySplinePointType();
-    UpdateMeasurementText();
-    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+    RefreshMeasurement();
 }
 
 void AMeasurementActor::ApplyManualSize()
@@ -206,8 +201,7 @@ void AMeasurementActor::ApplyManualSize()
     }
 
     SplineComponent->UpdateSpline();
-    UpdateMeasurementText();
-    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+    RefreshMeasurement();
 }
 
 void AMeasurementActor::ApplySplinePointType()
@@ -226,6 +220,12 @@ void AMeasurementActor::ApplySplinePointType()
     }
 
     SplineComponent->UpdateSpline();
+}
+
+void AMeasurementActor::RefreshMeasurement()
+{
+    LabelComponent->UpdateLabels(SplineComponent, MeasurementMode, DisplayUnit);
+    UpdateMeasurementText();
 }
 
 void AMeasurementActor::UpdateMeasurementText()

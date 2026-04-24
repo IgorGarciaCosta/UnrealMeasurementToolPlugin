@@ -3,6 +3,7 @@
 #include "MeasurementLabelComponent.h"
 #include "Components/SplineComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "DrawDebugHelpers.h"
 #include "MeasurementCalculator.h"
 
 UMeasurementLabelComponent::UMeasurementLabelComponent()
@@ -176,5 +177,85 @@ void UMeasurementLabelComponent::UpdateAngleLabels(USplineComponent *Spline, EMe
         Label->SetText(AngleText);
         Label->SetWorldSize(AngleLabelSize);
         Label->SetTextRenderColor(AngleLabelColor);
+    }
+}
+
+void UMeasurementLabelComponent::DrawAngleArcs(USplineComponent *Spline, EMeasurementMode Mode) const
+{
+    if (!bShowAngleLabels || !bShowAngleArcs || !IsValid(Spline))
+    {
+        return;
+    }
+
+    const int32 NumPoints = Spline->GetNumberOfSplinePoints();
+    if (NumPoints < 3)
+    {
+        return;
+    }
+
+    UWorld *World = GetWorld();
+    if (!World)
+    {
+        return;
+    }
+
+    const bool bClosed = (Mode == EMeasurementMode::Area);
+    const int32 EligibleCount = bClosed ? NumPoints : (NumPoints - 2);
+
+    for (int32 LabelIdx = 0; LabelIdx < EligibleCount; ++LabelIdx)
+    {
+        const int32 PointIdx = bClosed ? LabelIdx : (LabelIdx + 1);
+
+        int32 PrevIndex, NextIndex;
+        if (bClosed)
+        {
+            PrevIndex = (PointIdx - 1 + NumPoints) % NumPoints;
+            NextIndex = (PointIdx + 1) % NumPoints;
+        }
+        else
+        {
+            PrevIndex = PointIdx - 1;
+            NextIndex = PointIdx + 1;
+        }
+
+        const FVector Current = Spline->GetLocationAtSplinePoint(PointIdx, ESplineCoordinateSpace::World);
+        const FVector Prev = Spline->GetLocationAtSplinePoint(PrevIndex, ESplineCoordinateSpace::World);
+        const FVector Next = Spline->GetLocationAtSplinePoint(NextIndex, ESplineCoordinateSpace::World);
+
+        const FVector DirToPrev = (Prev - Current).GetSafeNormal();
+        const FVector DirToNext = (Next - Current).GetSafeNormal();
+
+        if (DirToPrev.IsNearlyZero() || DirToNext.IsNearlyZero())
+        {
+            continue;
+        }
+
+        const float Dot = FMath::Clamp(FVector::DotProduct(DirToPrev, DirToNext), -1.0f, 1.0f);
+        const float AngleRad = FMath::Acos(Dot);
+
+        if (AngleRad < KINDA_SMALL_NUMBER)
+        {
+            continue;
+        }
+
+        FVector Axis = FVector::CrossProduct(DirToPrev, DirToNext).GetSafeNormal();
+        if (Axis.IsNearlyZero())
+        {
+            Axis = FVector::UpVector;
+        }
+
+        const int32 NumSegs = FMath::Max(AngleArcSegments, 4);
+        FVector PrevPoint = Current + DirToPrev * AngleArcRadius;
+
+        for (int32 s = 1; s <= NumSegs; ++s)
+        {
+            const float t = static_cast<float>(s) / static_cast<float>(NumSegs);
+            const FVector RotatedDir = DirToPrev.RotateAngleAxis(
+                FMath::RadiansToDegrees(AngleRad) * t, Axis);
+            const FVector NextPoint = Current + RotatedDir * AngleArcRadius;
+
+            DrawDebugLine(World, PrevPoint, NextPoint, AngleArcColor, false, 0.15f, SDPG_World, 1.5f);
+            PrevPoint = NextPoint;
+        }
     }
 }

@@ -108,6 +108,9 @@ private:
 	/** Starts the billboard timer if it is not already running. */
 	void EnsureBillboardTimer();
 
+	/** Recalculates labels and measurement text in a single call. */
+	void RefreshMeasurement();
+
 	/** Reads spline length / area, formats it, and sends to the widget via interface. */
 	void UpdateMeasurementText();
 
