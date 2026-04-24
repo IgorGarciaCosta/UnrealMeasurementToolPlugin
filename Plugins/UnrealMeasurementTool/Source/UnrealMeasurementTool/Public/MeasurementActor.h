@@ -95,8 +95,13 @@ protected:
 	int32 MainLabelFontSize = 24;
 
 private:
-	/** Timer handle for the periodic billboard + debug-draw update. */
-	FTimerHandle BillboardTimerHandle;
+#if WITH_EDITOR
+	/** Handle for FEditorDelegates::OnEditorCameraMoved subscription. */
+	FDelegateHandle CameraMovedDelegateHandle;
+#endif
+
+	/** One-shot timer for deferred snap + debug-draw processing. */
+	FTimerHandle DeferredUpdateTimerHandle;
 
 	/** True when snap/labels need to be recalculated (set by OnConstruction, cleared by timer). */
 	bool bSnapDirty = false;
@@ -110,8 +115,22 @@ private:
 	/** Tracks hidden state so we can flush persistent lines on hide transition. */
 	bool bWasHiddenLastFrame = false;
 
-	/** Timer callback: rotates widget/labels to face camera, redraws dirty debug lines. */
-	void UpdateBillboard();
+#if WITH_EDITOR
+	/** Subscribes to FEditorDelegates::OnEditorCameraMoved if not already bound. */
+	void BindEditorCameraDelegate();
+
+	/** Unsubscribes from FEditorDelegates::OnEditorCameraMoved. */
+	void UnbindEditorCameraDelegate();
+
+	/** Called when any editor viewport camera moves — faces widget/labels toward camera. */
+	void OnCameraLocationChanged(const FVector &CameraLocation);
+#endif
+
+	/** Faces widget/labels toward camera and applies distance-based scale. */
+	void UpdateBillboard(const FVector &CameraLocation);
+
+	/** Flushes debug draws on hide transition, redraws if dirty and visible. */
+	void RefreshDebugDrawIfNeeded();
 
 	/** Flushes all persistent debug lines owned by this world. */
 	void FlushDebugDraws() const;
@@ -119,8 +138,11 @@ private:
 	/** Runs deferred SnapPoints + UpdateLabels when bSnapDirty is set. */
 	void ProcessDeferredSnap();
 
-	/** Starts the billboard timer if it is not already running. */
-	void EnsureBillboardTimer();
+	/** Schedules a one-shot deferred update for snap + debug-draw on the next tick. */
+	void ScheduleDeferredUpdate();
+
+	/** One-shot callback: processes snap, orients billboard, redraws debug lines. */
+	void ProcessDeferredUpdate();
 
 	/** Recalculates labels and measurement text in a single call. */
 	void RefreshMeasurement();

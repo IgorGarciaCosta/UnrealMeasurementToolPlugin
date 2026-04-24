@@ -13,6 +13,11 @@ public class UnrealMeasurementTool : ModuleRules
             "Engine"
         });
 
+        if (Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.Add("UnrealEd");
+        }
+
         PrivateDependencyModuleNames.AddRange(new string[]
         {
             "Slate",

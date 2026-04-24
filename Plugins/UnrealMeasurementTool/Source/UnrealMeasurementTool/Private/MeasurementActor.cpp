@@ -9,6 +9,10 @@
 #include "MeasurementSnapComponent.h"
 #include "MeasurementTxtWgtCommunicationInterface.h"
 
+#if WITH_EDITOR
+#include "Editor.h"
+#endif
+
 AMeasurementActor::AMeasurementActor()
 {
     PrimaryActorTick.bCanEverTick = false;
@@ -41,41 +45,79 @@ void AMeasurementActor::OnConstruction(const FTransform &Transform)
     }
 
     ApplySplinePointType();
-    EnsureBillboardTimer();
+
+#if WITH_EDITOR
+    BindEditorCameraDelegate();
+#endif
+
+    ScheduleDeferredUpdate();
 }
 
 void AMeasurementActor::Destroyed()
 {
-    GetWorldTimerManager().ClearTimer(BillboardTimerHandle);
+#if WITH_EDITOR
+    UnbindEditorCameraDelegate();
+#endif
+
+    GetWorldTimerManager().ClearTimer(DeferredUpdateTimerHandle);
     FlushDebugDraws();
     Super::Destroyed();
 }
 
-void AMeasurementActor::EnsureBillboardTimer()
+#if WITH_EDITOR
+void AMeasurementActor::BindEditorCameraDelegate()
 {
-    if (!GetWorldTimerManager().IsTimerActive(BillboardTimerHandle))
+    if (!CameraMovedDelegateHandle.IsValid())
     {
-        GetWorldTimerManager().SetTimer(BillboardTimerHandle, this, &AMeasurementActor::UpdateBillboard, 0.1f, true);
+        CameraMovedDelegateHandle = FEditorDelegates::OnEditorCameraMoved.AddWeakLambda(
+            this,
+            [this](const FVector &Location, const FRotator &, ELevelViewportType, int32)
+            {
+                OnCameraLocationChanged(Location);
+            });
     }
 }
 
-void AMeasurementActor::UpdateBillboard()
+void AMeasurementActor::UnbindEditorCameraDelegate()
 {
-    ProcessDeferredSnap();
-
-    FVector CameraLocation;
-    if (UMeasurementCalculator::GetActiveCameraLocation(GetWorld(), CameraLocation))
+    if (CameraMovedDelegateHandle.IsValid())
     {
-        UMeasurementCalculator::FaceComponentToCamera(WidgetComponent, CameraLocation);
-        LabelComponent->FaceLabelsToCamera(CameraLocation);
-
-        // Constant screen-size scaling for the main widget
-        constexpr float ReferenceDistance = 500.0f;
-        const float WidgetDist = FVector::Dist(WidgetComponent->GetComponentLocation(), CameraLocation);
-        const float WidgetScale = FMath::Clamp(WidgetDist / ReferenceDistance, 0.01f, 100.0f);
-        WidgetComponent->SetRelativeScale3D(FVector(WidgetScale));
+        FEditorDelegates::OnEditorCameraMoved.Remove(CameraMovedDelegateHandle);
+        CameraMovedDelegateHandle.Reset();
     }
+}
 
+void AMeasurementActor::OnCameraLocationChanged(const FVector &CameraLocation)
+{
+    UpdateBillboard(CameraLocation);
+    RefreshDebugDrawIfNeeded();
+}
+#endif
+
+void AMeasurementActor::ScheduleDeferredUpdate()
+{
+    if (!GetWorldTimerManager().IsTimerActive(DeferredUpdateTimerHandle))
+    {
+        GetWorldTimerManager().SetTimer(
+            DeferredUpdateTimerHandle, this,
+            &AMeasurementActor::ProcessDeferredUpdate,
+            KINDA_SMALL_NUMBER, false);
+    }
+}
+
+void AMeasurementActor::UpdateBillboard(const FVector &CameraLocation)
+{
+    UMeasurementCalculator::FaceComponentToCamera(WidgetComponent, CameraLocation);
+    LabelComponent->FaceLabelsToCamera(CameraLocation);
+
+    constexpr float ReferenceDistance = 500.0f;
+    const float WidgetDist = FVector::Dist(WidgetComponent->GetComponentLocation(), CameraLocation);
+    const float WidgetScale = FMath::Clamp(WidgetDist / ReferenceDistance, 0.01f, 100.0f);
+    WidgetComponent->SetRelativeScale3D(FVector(WidgetScale));
+}
+
+void AMeasurementActor::RefreshDebugDrawIfNeeded()
+{
     const bool bHiddenNow = IsTemporarilyHiddenInEditor();
     if (bHiddenNow && !bWasHiddenLastFrame)
     {
@@ -91,6 +133,19 @@ void AMeasurementActor::UpdateBillboard()
         DrawClosingLine();
         LabelComponent->DrawAngleArcs(SplineComponent, MeasurementMode);
     }
+}
+
+void AMeasurementActor::ProcessDeferredUpdate()
+{
+    ProcessDeferredSnap();
+
+    FVector CameraLocation;
+    if (UMeasurementCalculator::GetActiveCameraLocation(GetWorld(), CameraLocation))
+    {
+        UpdateBillboard(CameraLocation);
+    }
+
+    RefreshDebugDrawIfNeeded();
 }
 
 void AMeasurementActor::ProcessDeferredSnap()
@@ -138,12 +193,15 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     {
         UpdateMeasurementText();
     }
+
+    ScheduleDeferredUpdate();
 }
 
 void AMeasurementActor::OnLabelPropertiesChanged()
 {
     bDebugDrawDirty = true;
     RefreshMeasurement();
+    ScheduleDeferredUpdate();
 }
 
 void AMeasurementActor::OnSnapPropertiesChanged()
@@ -151,6 +209,7 @@ void AMeasurementActor::OnSnapPropertiesChanged()
     bDebugDrawDirty = true;
     SnapComponent->SnapPoints(SplineComponent);
     RefreshMeasurement();
+    ScheduleDeferredUpdate();
 }
 #endif
 
