@@ -9,8 +9,5 @@
 #include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/UnrealEditor/Inc/UnrealMeasurementTool/UHT/UnrealMeasurementTool.init.gen.cpp"
 #include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/PerModuleInline.gen.cpp"
 #include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/MeasurementCalculator.cpp"
-#include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/MeasurementLabelComponent.cpp"
 #include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/MeasurementSnapComponent.cpp"
-#include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/MeasurementTextWidget.cpp"
-#include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/MeasurementTxtWgtCommunicationInterface.cpp"
 #include "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Source/UnrealMeasurementTool/Private/UnrealMeasurementTool.cpp"

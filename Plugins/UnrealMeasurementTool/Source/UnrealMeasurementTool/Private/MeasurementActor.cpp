@@ -67,6 +67,12 @@ void AMeasurementActor::UpdateBillboard()
     {
         UMeasurementCalculator::FaceComponentToCamera(WidgetComponent, CameraLocation);
         LabelComponent->FaceLabelsToCamera(CameraLocation);
+
+        // Constant screen-size scaling for the main widget
+        constexpr float ReferenceDistance = 500.0f;
+        const float WidgetDist = FVector::Dist(WidgetComponent->GetComponentLocation(), CameraLocation);
+        const float WidgetScale = FMath::Clamp(WidgetDist / ReferenceDistance, 0.01f, 100.0f);
+        WidgetComponent->SetRelativeScale3D(FVector(WidgetScale));
     }
 
     if (!IsTemporarilyHiddenInEditor())
@@ -116,6 +122,10 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, MeasurementMode))
     {
         RefreshMeasurement();
+    }
+    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, MainLabelFontSize))
+    {
+        UpdateMeasurementText();
     }
 }
 
@@ -261,6 +271,7 @@ void AMeasurementActor::UpdateMeasurementText()
     }
 
     IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementText(Widget, FormattedText);
+    IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementFontSize(Widget, MainLabelFontSize);
 }
 
 void AMeasurementActor::DrawClosingLine() const

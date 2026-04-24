@@ -49,6 +49,11 @@ public:
               meta = (DisplayName = "Label Color", EditCondition = "bShowCumulativeLabels"))
     FColor CumulativeLabelColor = FColor::White;
 
+    /** Vertical offset (Z) above spline points for cumulative labels. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Cumulative Labels",
+              meta = (DisplayName = "Label Z Offset", ClampMin = "0.0", EditCondition = "bShowCumulativeLabels"))
+    float CumulativeLabelZOffset = 60.0f;
+
     // --- Angle Labels ---
 
     /** When enabled, displays the angle between consecutive segments at each spline point. */
@@ -65,6 +70,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
               meta = (DisplayName = "Label Color", EditCondition = "bShowAngleLabels"))
     FColor AngleLabelColor = FColor::Yellow;
+
+    /** Vertical offset (Z) above spline points for angle labels. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
+              meta = (DisplayName = "Label Z Offset", ClampMin = "0.0", EditCondition = "bShowAngleLabels"))
+    float AngleLabelZOffset = 30.0f;
 
     /** When enabled, draws an arc visualizing the angle between segments. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Measurement Control|Angle Labels",
@@ -104,9 +114,6 @@ private:
     /** Dynamic array of text render components for angle labels. */
     UPROPERTY()
     TArray<TObjectPtr<UTextRenderComponent>> AngleLabelComponents;
-
-    /** Vertical offset (Z) for angle labels above the spline point. */
-    float AngleLabelZOffset = 30.0f;
 
     /** Creates / destroys / updates cumulative distance labels at each spline point. */
     void UpdatePointLabels(USplineComponent *Spline, EMeasurementUnit Unit);

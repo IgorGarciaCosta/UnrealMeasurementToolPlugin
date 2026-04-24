@@ -24,5 +24,9 @@ class UNREALMEASUREMENTTOOL_API IMeasurementTxtWgtCommunicationInterface
 public:
 	/** Sends a formatted measurement text to the implementing widget. */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Measurement")
-	void SendMeasurementText(const FText& InText);
+	void SendMeasurementText(const FText &InText);
+
+	/** Sends a font size to the implementing widget. */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Measurement")
+	void SendMeasurementFontSize(int32 InSize);
 };

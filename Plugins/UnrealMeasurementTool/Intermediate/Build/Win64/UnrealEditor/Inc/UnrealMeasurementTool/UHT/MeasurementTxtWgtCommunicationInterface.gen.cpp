@@ -18,6 +18,85 @@ UNREALMEASUREMENTTOOL_API UClass* Z_Construct_UClass_UMeasurementTxtWgtCommunica
 UPackage* Z_Construct_UPackage__Script_UnrealMeasurementTool();
 // ********** End Cross Module References **********************************************************
 
+// ********** Begin Interface UMeasurementTxtWgtCommunicationInterface Function SendMeasurementFontSize 
+struct MeasurementTxtWgtCommunicationInterface_eventSendMeasurementFontSize_Parms
+{
+	int32 InSize;
+};
+void IMeasurementTxtWgtCommunicationInterface::SendMeasurementFontSize(int32 InSize)
+{
+	check(0 && "Do not directly call Event functions in Interfaces. Call Execute_SendMeasurementFontSize instead.");
+}
+static FName NAME_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize = FName(TEXT("SendMeasurementFontSize"));
+void IMeasurementTxtWgtCommunicationInterface::Execute_SendMeasurementFontSize(UObject* O, int32 InSize)
+{
+	check(O != NULL);
+	check(O->GetClass()->ImplementsInterface(UMeasurementTxtWgtCommunicationInterface::StaticClass()));
+	MeasurementTxtWgtCommunicationInterface_eventSendMeasurementFontSize_Parms Parms;
+	UFunction* const Func = O->FindFunction(NAME_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize);
+	if (Func)
+	{
+		Parms.InSize=std::move(InSize);
+		O->ProcessEvent(Func, &Parms);
+	}
+	else if (auto I = (IMeasurementTxtWgtCommunicationInterface*)(O->GetNativeInterfaceAddress(UMeasurementTxtWgtCommunicationInterface::StaticClass())))
+	{
+		I->SendMeasurementFontSize_Implementation(InSize);
+	}
+}
+struct Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Measurement" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Sends a font size to the implementing widget. */" },
+#endif
+		{ "ModuleRelativePath", "Public/MeasurementTxtWgtCommunicationInterface.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Sends a font size to the implementing widget." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function SendMeasurementFontSize constinit property declarations ***************
+	static const UECodeGen_Private::FIntPropertyParams NewProp_InSize;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function SendMeasurementFontSize constinit property declarations *****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function SendMeasurementFontSize Property Definitions **************************
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::NewProp_InSize = { "InSize", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(MeasurementTxtWgtCommunicationInterface_eventSendMeasurementFontSize_Parms, InSize), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::NewProp_InSize,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::PropPointers) < 2048);
+// ********** End Function SendMeasurementFontSize Property Definitions ****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UMeasurementTxtWgtCommunicationInterface, nullptr, "SendMeasurementFontSize", 	Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::PropPointers), 
+sizeof(MeasurementTxtWgtCommunicationInterface_eventSendMeasurementFontSize_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x0C020C00, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::Function_MetaDataParams), Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(MeasurementTxtWgtCommunicationInterface_eventSendMeasurementFontSize_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(IMeasurementTxtWgtCommunicationInterface::execSendMeasurementFontSize)
+{
+	P_GET_PROPERTY(FIntProperty,Z_Param_InSize);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->SendMeasurementFontSize_Implementation(Z_Param_InSize);
+	P_NATIVE_END;
+}
+// ********** End Interface UMeasurementTxtWgtCommunicationInterface Function SendMeasurementFontSize 
+
 // ********** Begin Interface UMeasurementTxtWgtCommunicationInterface Function SendMeasurementText 
 struct MeasurementTxtWgtCommunicationInterface_eventSendMeasurementText_Parms
 {
@@ -143,10 +222,12 @@ struct Z_Construct_UClass_UMeasurementTxtWgtCommunicationInterface_Statics
 // ********** Begin Interface UMeasurementTxtWgtCommunicationInterface constinit property declarations 
 // ********** End Interface UMeasurementTxtWgtCommunicationInterface constinit property declarations 
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
+		{ .NameUTF8 = UTF8TEXT("SendMeasurementFontSize"), .Pointer = &IMeasurementTxtWgtCommunicationInterface::execSendMeasurementFontSize },
 		{ .NameUTF8 = UTF8TEXT("SendMeasurementText"), .Pointer = &IMeasurementTxtWgtCommunicationInterface::execSendMeasurementText },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
+		{ &Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementFontSize, "SendMeasurementFontSize" }, // 2611060934
 		{ &Z_Construct_UFunction_UMeasurementTxtWgtCommunicationInterface_SendMeasurementText, "SendMeasurementText" }, // 1366457051
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
@@ -196,10 +277,10 @@ DEFINE_VTABLE_PTR_HELPER_CTOR_NS(, UMeasurementTxtWgtCommunicationInterface);
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UMeasurementTxtWgtCommunicationInterface, UMeasurementTxtWgtCommunicationInterface::StaticClass, TEXT("UMeasurementTxtWgtCommunicationInterface"), &Z_Registration_Info_UClass_UMeasurementTxtWgtCommunicationInterface, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMeasurementTxtWgtCommunicationInterface), 1644670533U) },
+		{ Z_Construct_UClass_UMeasurementTxtWgtCommunicationInterface, UMeasurementTxtWgtCommunicationInterface::StaticClass, TEXT("UMeasurementTxtWgtCommunicationInterface"), &Z_Registration_Info_UClass_UMeasurementTxtWgtCommunicationInterface, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMeasurementTxtWgtCommunicationInterface), 3852926708U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_2102648024{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_2651075782{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,

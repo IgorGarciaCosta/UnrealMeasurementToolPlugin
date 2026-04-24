@@ -18,7 +18,9 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Interface UMeasurementTxtWgtCommunicationInterface *****************************
 #define FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementTxtWgtCommunicationInterface_h_12_RPC_WRAPPERS_NO_PURE_DECLS \
+	virtual void SendMeasurementFontSize_Implementation(int32 InSize) {}; \
 	virtual void SendMeasurementText_Implementation(FText const& InText) {}; \
+	DECLARE_FUNCTION(execSendMeasurementFontSize); \
 	DECLARE_FUNCTION(execSendMeasurementText);
 
 
@@ -63,6 +65,7 @@ protected: \
 public: \
 	typedef UMeasurementTxtWgtCommunicationInterface UClassType; \
 	typedef IMeasurementTxtWgtCommunicationInterface ThisClass; \
+	static void Execute_SendMeasurementFontSize(UObject* O, int32 InSize); \
 	static void Execute_SendMeasurementText(UObject* O, FText const& InText); \
 	virtual UObject* _getUObject() const { return nullptr; }
 

@@ -9,5 +9,8 @@
 "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Intermediate/Build/Win64/x64/MeasurementPluginEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
 "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/Module.UnrealMeasurementTool.cpp.obj"
 "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementActor.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementLabelComponent.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementTextWidget.cpp.obj"
+"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/MeasurementTxtWgtCommunicationInterface.cpp.obj"
 "C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/Default.rc2.res"
 /OUT:"C:/Users/ISILV125/Documents/GitHub/UnrealMeasurementToolPlugin/Plugins/UnrealMeasurementTool/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMeasurementTool/UnrealEditor-UnrealMeasurementTool.lib"

@@ -27,11 +27,16 @@ void UMeasurementLabelComponent::UpdateLabels(USplineComponent *Spline, EMeasure
 
 void UMeasurementLabelComponent::FaceLabelsToCamera(const FVector &CameraLocation)
 {
+    constexpr float ReferenceDistance = 500.0f;
+
     if (bShowCumulativeLabels)
     {
         for (UTextRenderComponent *Label : PointLabelComponents)
         {
             UMeasurementCalculator::FaceComponentToCamera(Label, CameraLocation);
+            const float Dist = FVector::Dist(Label->GetComponentLocation(), CameraLocation);
+            const float Scale = FMath::Clamp(Dist / ReferenceDistance, 0.01f, 100.0f);
+            Label->SetWorldSize(CumulativeLabelSize * Scale);
         }
     }
 
@@ -40,6 +45,9 @@ void UMeasurementLabelComponent::FaceLabelsToCamera(const FVector &CameraLocatio
         for (UTextRenderComponent *Label : AngleLabelComponents)
         {
             UMeasurementCalculator::FaceComponentToCamera(Label, CameraLocation);
+            const float Dist = FVector::Dist(Label->GetComponentLocation(), CameraLocation);
+            const float Scale = FMath::Clamp(Dist / ReferenceDistance, 0.01f, 100.0f);
+            Label->SetWorldSize(AngleLabelSize * Scale);
         }
     }
 }
@@ -85,7 +93,7 @@ void UMeasurementLabelComponent::UpdatePointLabels(USplineComponent *Spline, EMe
         }
 
         const FVector PointLocation = Spline->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-        Label->SetRelativeLocation(PointLocation + FVector(0.0f, 0.0f, 30.0f));
+        Label->SetRelativeLocation(PointLocation + FVector(0.0f, 0.0f, CumulativeLabelZOffset));
 
         const float CumulativeDistCm = Spline->GetDistanceAlongSplineAtSplinePoint(i);
         Label->SetText(UMeasurementCalculator::FormatDistance(CumulativeDistCm, Unit));

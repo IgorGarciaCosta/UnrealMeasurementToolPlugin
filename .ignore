@@ -1,4 +1,9 @@
+/.git
+/.github
 /.vscode
 /Content
+/DerivedDataCache
 /Intermediate
 /Saved
+/Plugins/UnrealMeasurementTool/Content
+/Plugins/UnrealMeasurementTool/Intermediate

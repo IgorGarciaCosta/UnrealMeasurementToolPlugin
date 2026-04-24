@@ -89,6 +89,11 @@ protected:
 			  meta = (DisplayName = "Show Closing Line", EditCondition = "MeasurementMode == EMeasurementMode::Area"))
 	bool bShowClosingLine = true;
 
+	/** Font size of the main measurement label. */
+	UPROPERTY(EditAnywhere, Category = "Measurement Control",
+			  meta = (DisplayName = "Label Font Size", ClampMin = "1", ClampMax = "200"))
+	int32 MainLabelFontSize = 24;
+
 private:
 	/** Timer handle for the periodic billboard + debug-draw update. */
 	FTimerHandle BillboardTimerHandle;

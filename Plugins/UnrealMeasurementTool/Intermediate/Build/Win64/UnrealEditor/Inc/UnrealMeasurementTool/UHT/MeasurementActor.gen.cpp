@@ -232,6 +232,19 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ToolTip", "Show a debug closing line from the last spline point to the first (Area mode)." },
 #endif
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MainLabelFontSize_MetaData[] = {
+		{ "Category", "Measurement Control" },
+		{ "ClampMax", "200" },
+		{ "ClampMin", "1" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Font size of the main measurement label. */" },
+#endif
+		{ "DisplayName", "Label Font Size" },
+		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Font size of the main measurement label." },
+#endif
+	};
 #endif // WITH_METADATA
 
 // ********** Begin Class AMeasurementActor constinit property declarations ************************
@@ -248,6 +261,7 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bLinearSpline;
 	static void NewProp_bShowClosingLine_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bShowClosingLine;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_MainLabelFontSize;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class AMeasurementActor constinit property declarations **************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -286,6 +300,7 @@ void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine_SetB
 	((AMeasurementActor*)Obj)->bShowClosingLine = 1;
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine = { "bShowClosingLine", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(AMeasurementActor), &Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bShowClosingLine_MetaData), NewProp_bShowClosingLine_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MainLabelFontSize = { "MainLabelFontSize", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, MainLabelFontSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MainLabelFontSize_MetaData), NewProp_MainLabelFontSize_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurementActor_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_SplineComponent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_WidgetComponent,
@@ -298,6 +313,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurem
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MainLabelFontSize,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_AMeasurementActor_Statics::PropPointers) < 2048);
 // ********** End Class AMeasurementActor Property Definitions *************************************
@@ -342,10 +358,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 4138313154U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 1867508706U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_2052824446{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_2225121101{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,
