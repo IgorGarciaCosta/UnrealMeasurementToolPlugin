@@ -72,14 +72,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Unit"))
 	EMeasurementUnit DisplayUnit = EMeasurementUnit::Meters;
 
-	/** Size (in the currently selected unit) to apply when Submit is pressed. */
-	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Size", ClampMin = "0.01"))
-	float ManualSize = 1.0f;
-
-	/** Rescales the spline so its total length matches ManualSize in the current unit. */
-	UFUNCTION(CallInEditor, Category = "Measurement Control", meta = (DisplayName = "Submit"))
-	void ApplyManualSize();
-
 	/** When enabled, spline segments are straight lines instead of smooth curves. */
 	UPROPERTY(EditAnywhere, Category = "Measurement Control", meta = (DisplayName = "Linear"))
 	bool bLinearSpline = false;

@@ -18,7 +18,6 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class AMeasurementActor ********************************************************
 #define FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h_34_RPC_WRAPPERS_NO_PURE_DECLS \
-	DECLARE_FUNCTION(execApplyManualSize); \
 	DECLARE_FUNCTION(execResetSpline);
 
 

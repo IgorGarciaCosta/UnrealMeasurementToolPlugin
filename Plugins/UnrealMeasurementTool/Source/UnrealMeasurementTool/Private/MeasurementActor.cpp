@@ -172,11 +172,7 @@ void AMeasurementActor::PostEditChangeProperty(FPropertyChangedEvent &PropertyCh
     bDebugDrawDirty = true;
     const FName PropName = PropertyChangedEvent.GetPropertyName();
 
-    if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, ManualSize))
-    {
-        ApplyManualSize();
-    }
-    else if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
+    if (PropName == GET_MEMBER_NAME_CHECKED(AMeasurementActor, DisplayUnit))
     {
         RefreshMeasurement();
     }
@@ -232,61 +228,6 @@ void AMeasurementActor::ResetSpline()
     SplineComponent->AddSplinePoint(FVector(100.f, 0.f, 0.f), ESplineCoordinateSpace::Local, true);
 
     ApplySplinePointType();
-    RefreshMeasurement();
-}
-
-void AMeasurementActor::ApplyManualSize()
-{
-    if (!SplineComponent)
-    {
-        return;
-    }
-
-    bDebugDrawDirty = true;
-
-    float ScaleFactor = 1.0f;
-
-    // In Area mode, ManualSize is a target area — convert to cm² and use sqrt scaling.
-    if (MeasurementMode == EMeasurementMode::Area)
-    {
-        const float DesiredAreaCmSq = MeasurementUnitUtils::UnitSqToCmSq(ManualSize, DisplayUnit);
-
-        const TArray<FVector> Points = GetSplineWorldPoints();
-        const float CurrentArea = UMeasurementCalculator::CalculatePolygonArea(Points);
-        if (CurrentArea <= KINDA_SMALL_NUMBER)
-        {
-            return;
-        }
-
-        ScaleFactor = FMath::Sqrt(DesiredAreaCmSq / CurrentArea);
-    }
-    else
-    {
-        const float DesiredLengthCm = MeasurementUnitUtils::UnitToCm(ManualSize, DisplayUnit);
-        const float CurrentLength = SplineComponent->GetSplineLength();
-
-        if (CurrentLength <= KINDA_SMALL_NUMBER)
-        {
-            return;
-        }
-
-        ScaleFactor = DesiredLengthCm / CurrentLength;
-    }
-
-    const int32 NumPoints = SplineComponent->GetNumberOfSplinePoints();
-    SplineComponent->Modify();
-
-    for (int32 i = 0; i < NumPoints; ++i)
-    {
-        FVector Location = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
-        SplineComponent->SetLocationAtSplinePoint(i, Location * ScaleFactor, ESplineCoordinateSpace::Local, false);
-
-        FVector ArriveTangent = SplineComponent->GetArriveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-        FVector LeaveTangent = SplineComponent->GetLeaveTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-        SplineComponent->SetTangentsAtSplinePoint(i, ArriveTangent * ScaleFactor, LeaveTangent * ScaleFactor, ESplineCoordinateSpace::Local, false);
-    }
-
-    SplineComponent->UpdateSpline();
     RefreshMeasurement();
 }
 

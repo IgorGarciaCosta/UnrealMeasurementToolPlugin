@@ -24,50 +24,6 @@ UNREALMEASUREMENTTOOL_API UEnum* Z_Construct_UEnum_UnrealMeasurementTool_EMeasur
 UPackage* Z_Construct_UPackage__Script_UnrealMeasurementTool();
 // ********** End Cross Module References **********************************************************
 
-// ********** Begin Class AMeasurementActor Function ApplyManualSize *******************************
-struct Z_Construct_UFunction_AMeasurementActor_ApplyManualSize_Statics
-{
-#if WITH_METADATA
-	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
-		{ "CallInEditor", "true" },
-		{ "Category", "Measurement Control" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Rescales the spline so its total length matches ManualSize in the current unit. */" },
-#endif
-		{ "DisplayName", "Submit" },
-		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Rescales the spline so its total length matches ManualSize in the current unit." },
-#endif
-	};
-#endif // WITH_METADATA
-
-// ********** Begin Function ApplyManualSize constinit property declarations ***********************
-// ********** End Function ApplyManualSize constinit property declarations *************************
-	static const UECodeGen_Private::FFunctionParams FuncParams;
-};
-const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_AMeasurementActor_ApplyManualSize_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_AMeasurementActor, nullptr, "ApplyManualSize", 	nullptr, 
-	0, 
-0,
-RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00080401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_AMeasurementActor_ApplyManualSize_Statics::Function_MetaDataParams), Z_Construct_UFunction_AMeasurementActor_ApplyManualSize_Statics::Function_MetaDataParams)},  };
-UFunction* Z_Construct_UFunction_AMeasurementActor_ApplyManualSize()
-{
-	static UFunction* ReturnFunction = nullptr;
-	if (!ReturnFunction)
-	{
-		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_AMeasurementActor_ApplyManualSize_Statics::FuncParams);
-	}
-	return ReturnFunction;
-}
-DEFINE_FUNCTION(AMeasurementActor::execApplyManualSize)
-{
-	P_FINISH;
-	P_NATIVE_BEGIN;
-	P_THIS->ApplyManualSize();
-	P_NATIVE_END;
-}
-// ********** End Class AMeasurementActor Function ApplyManualSize *********************************
-
 // ********** Begin Class AMeasurementActor Function ResetSpline ***********************************
 struct Z_Construct_UFunction_AMeasurementActor_ResetSpline_Statics
 {
@@ -197,18 +153,6 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 		{ "ToolTip", "Unit used for the measurement display." },
 #endif
 	};
-	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ManualSize_MetaData[] = {
-		{ "Category", "Measurement Control" },
-		{ "ClampMin", "0.01" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Size (in the currently selected unit) to apply when Submit is pressed. */" },
-#endif
-		{ "DisplayName", "Size" },
-		{ "ModuleRelativePath", "Public/MeasurementActor.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Size (in the currently selected unit) to apply when Submit is pressed." },
-#endif
-	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bLinearSpline_MetaData[] = {
 		{ "Category", "Measurement Control" },
 #if !UE_BUILD_SHIPPING
@@ -256,7 +200,6 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_MeasurementMode;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_DisplayUnit_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_DisplayUnit;
-	static const UECodeGen_Private::FFloatPropertyParams NewProp_ManualSize;
 	static void NewProp_bLinearSpline_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bLinearSpline;
 	static void NewProp_bShowClosingLine_SetBit(void* Obj);
@@ -265,12 +208,10 @@ struct Z_Construct_UClass_AMeasurementActor_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class AMeasurementActor constinit property declarations **************************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
-		{ .NameUTF8 = UTF8TEXT("ApplyManualSize"), .Pointer = &AMeasurementActor::execApplyManualSize },
 		{ .NameUTF8 = UTF8TEXT("ResetSpline"), .Pointer = &AMeasurementActor::execResetSpline },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
-		{ &Z_Construct_UFunction_AMeasurementActor_ApplyManualSize, "ApplyManualSize" }, // 3132284702
 		{ &Z_Construct_UFunction_AMeasurementActor_ResetSpline, "ResetSpline" }, // 3877373454
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
@@ -289,7 +230,6 @@ const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActo
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode = { "MeasurementMode", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, MeasurementMode), Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementMode, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MeasurementMode_MetaData), NewProp_MeasurementMode_MetaData) }; // 2049286744
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit = { "DisplayUnit", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, DisplayUnit), Z_Construct_UEnum_UnrealMeasurementTool_EMeasurementUnit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_DisplayUnit_MetaData), NewProp_DisplayUnit_MetaData) }; // 4084313674
-const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize = { "ManualSize", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(AMeasurementActor, ManualSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ManualSize_MetaData), NewProp_ManualSize_MetaData) };
 void Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline_SetBit(void* Obj)
 {
 	((AMeasurementActor*)Obj)->bLinearSpline = 1;
@@ -310,7 +250,6 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMeasurem
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MeasurementMode,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_DisplayUnit,
-	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_ManualSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bLinearSpline,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_bShowClosingLine,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMeasurementActor_Statics::NewProp_MainLabelFontSize,
@@ -358,10 +297,10 @@ AMeasurementActor::~AMeasurementActor() {}
 struct Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 1867508706U) },
+		{ Z_Construct_UClass_AMeasurementActor, AMeasurementActor::StaticClass, TEXT("AMeasurementActor"), &Z_Registration_Info_UClass_AMeasurementActor, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMeasurementActor), 3715737736U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_2225121101{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_1369242370{
 	TEXT("/Script/UnrealMeasurementTool"),
 	Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_ISILV125_Documents_GitHub_UnrealMeasurementToolPlugin_Plugins_UnrealMeasurementTool_Source_UnrealMeasurementTool_Public_MeasurementActor_h__Script_UnrealMeasurementTool_Statics::ClassInfo),
 	nullptr, 0,

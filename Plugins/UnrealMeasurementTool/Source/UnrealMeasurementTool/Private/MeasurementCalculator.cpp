@@ -52,15 +52,15 @@ float UMeasurementCalculator::CalculatePolygonArea(const TArray<FVector> &Points
 
 float UMeasurementCalculator::CalculateAngleBetweenSegments(const FVector &Prev, const FVector &Current, const FVector &Next)
 {
-    const FVector DirIn = (Current - Prev).GetSafeNormal();
-    const FVector DirOut = (Next - Current).GetSafeNormal();
+    const FVector DirToPrev = (Prev - Current).GetSafeNormal();
+    const FVector DirToNext = (Next - Current).GetSafeNormal();
 
-    if (DirIn.IsNearlyZero() || DirOut.IsNearlyZero())
+    if (DirToPrev.IsNearlyZero() || DirToNext.IsNearlyZero())
     {
         return 0.0f;
     }
 
-    const float Dot = FMath::Clamp(FVector::DotProduct(DirIn, DirOut), -1.0f, 1.0f);
+    const float Dot = FMath::Clamp(FVector::DotProduct(DirToPrev, DirToNext), -1.0f, 1.0f);
     return FMath::RadiansToDegrees(FMath::Acos(Dot));
 }
 
