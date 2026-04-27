@@ -5,6 +5,46 @@ A spline-based measurement tool plugin for Unreal Engine 5.7 that measures dista
 ![Engine Version](https://img.shields.io/badge/Unreal%20Engine-5.7-blue)
 ![Platform](https://img.shields.io/badge/Platform-Win64-lightgrey)
 
+## Screenshots
+
+### Overview
+
+![Overview](Imgs/overview.png)
+
+### Measurement Modes
+
+| Linear Measurement | Curve Measurement |
+|:--:|:--:|
+| ![Linear Measurement](Imgs/linearMeasurement.png) | ![Curve Measurement](Imgs/curveMeasurement.png) |
+
+| Area Measurement | Irregular Area Measurement |
+|:--:|:--:|
+| ![Area Measurement](Imgs/areaMeasurement.png) | ![Irregular Area Measurement](Imgs/irregularAreaMeasurement.png) |
+
+### Labels
+
+| Cumulative Labels | Angle Labels |
+|:--:|:--:|
+| ![Cumulative Labels](Imgs/cumulativeLabels.png) | ![Angle Labels](Imgs/angleLabels.png) |
+
+### Unit Support
+
+| Meters | Feet | Inches |
+|:--:|:--:|:--:|
+| ![Meters](Imgs/measureMeters.png) | ![Feet](Imgs/measureFeet.png) | ![Inches](Imgs/measureInches.png) |
+
+### Snap Modes
+
+| Snap to Ground | Snap to Surface |
+|:--:|:--:|
+| ![Snap to Ground](Imgs/snapToGround.png) | ![Snap to Surface](Imgs/snapToSurface.png) |
+
+### Content Assets
+
+| BP_MeasurementActor | WBP_MeasurementWidget |
+|:--:|:--:|
+| ![BP_MeasurementActor](Imgs/bp_measurementActor.png) | ![WBP_MeasurementWidget](Imgs/wbp_measurementWidget.png) |
+
 ## Features
 
 - **Distance & Area modes** — Measure spline length (Distance) or the enclosed polygon area (Area) using the Shoelace formula with Newell's method for arbitrary 3D polygons.
