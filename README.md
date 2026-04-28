@@ -13,36 +13,36 @@ A spline-based measurement tool plugin for Unreal Engine 5.7 that measures dista
 
 ### Measurement Modes
 
-| Linear Measurement | Curve Measurement |
-|:--:|:--:|
+|                Linear Measurement                 |                Curve Measurement                |
+| :-----------------------------------------------: | :---------------------------------------------: |
 | ![Linear Measurement](Imgs/linearMeasurement.png) | ![Curve Measurement](Imgs/curveMeasurement.png) |
 
-| Area Measurement | Irregular Area Measurement |
-|:--:|:--:|
+|               Area Measurement                |                    Irregular Area Measurement                    |
+| :-------------------------------------------: | :--------------------------------------------------------------: |
 | ![Area Measurement](Imgs/areaMeasurement.png) | ![Irregular Area Measurement](Imgs/irregularAreaMeasurement.png) |
 
 ### Labels
 
-| Cumulative Labels | Angle Labels |
-|:--:|:--:|
+|                Cumulative Labels                |             Angle Labels              |
+| :---------------------------------------------: | :-----------------------------------: |
 | ![Cumulative Labels](Imgs/cumulativeLabels.png) | ![Angle Labels](Imgs/angleLabels.png) |
 
 ### Unit Support
 
-| Meters | Feet | Inches |
-|:--:|:--:|:--:|
+|              Meters               |             Feet              |              Inches               |
+| :-------------------------------: | :---------------------------: | :-------------------------------: |
 | ![Meters](Imgs/measureMeters.png) | ![Feet](Imgs/measureFeet.png) | ![Inches](Imgs/measureInches.png) |
 
 ### Snap Modes
 
-| Snap to Ground | Snap to Surface |
-|:--:|:--:|
+|              Snap to Ground              |              Snap to Surface               |
+| :--------------------------------------: | :----------------------------------------: |
 | ![Snap to Ground](Imgs/snapToGround.png) | ![Snap to Surface](Imgs/snapToSurface.png) |
 
 ### Content Assets
 
-| BP_MeasurementActor | WBP_MeasurementWidget |
-|:--:|:--:|
+|                 BP_MeasurementActor                  |                  WBP_MeasurementWidget                   |
+| :--------------------------------------------------: | :------------------------------------------------------: |
 | ![BP_MeasurementActor](Imgs/bp_measurementActor.png) | ![WBP_MeasurementWidget](Imgs/wbp_measurementWidget.png) |
 
 ## Features
@@ -138,62 +138,62 @@ This makes it straightforward to create a custom widget — just implement the i
 
 ### AMeasurementActor
 
-| Property               | Category            | Description                                             |
-| ---------------------- | ------------------- | ------------------------------------------------------- |
-| **Mode**               | Measurement Control | Distance (spline length) or Area (enclosed polygon).    |
-| **Unit**               | Measurement Control | cm, m, km, ft, in, yd.                                  |
-| **Size**               | Measurement Control | Target value to apply via Submit (in the current unit). |
-| **Linear**             | Measurement Control | Straight-line segments instead of smooth curves.        |
-| **Show Closing Line**  | Measurement Control | Debug line from last to first point (Area mode only).   |
-| **Main Label Font Size** | Measurement Control | Font size for the main measurement widget (1–200).    |
+| Property                 | Category            | Description                                             |
+| ------------------------ | ------------------- | ------------------------------------------------------- |
+| **Mode**                 | Measurement Control | Distance (spline length) or Area (enclosed polygon).    |
+| **Unit**                 | Measurement Control | cm, m, km, ft, in, yd.                                  |
+| **Size**                 | Measurement Control | Target value to apply via Submit (in the current unit). |
+| **Linear**               | Measurement Control | Straight-line segments instead of smooth curves.        |
+| **Show Closing Line**    | Measurement Control | Debug line from last to first point (Area mode only).   |
+| **Main Label Font Size** | Measurement Control | Font size for the main measurement widget (1–200).      |
 
 ### UMeasurementSnapComponent
 
-| Property                  | Category            | Description                                          |
-| ------------------------- | ------------------- | ---------------------------------------------------- |
-| **Snap Mode**             | Measurement Control | Off, Ground (Trace Down), Nearest Surface.           |
-| **Snap Radius**           | Measurement Control | Search radius for Surface Snap.                      |
-| **Ground Trace Distance** | Measurement Control | Max downward trace for Ground Snap.                  |
-| **Snap Trace Channel**    | Measurement Control | Collision channel used for snap traces.              |
-| **Show Snap Radius**      | Measurement Control | Debug spheres around each point (Surface Snap).      |
+| Property                  | Category            | Description                                     |
+| ------------------------- | ------------------- | ----------------------------------------------- |
+| **Snap Mode**             | Measurement Control | Off, Ground (Trace Down), Nearest Surface.      |
+| **Snap Radius**           | Measurement Control | Search radius for Surface Snap.                 |
+| **Ground Trace Distance** | Measurement Control | Max downward trace for Ground Snap.             |
+| **Snap Trace Channel**    | Measurement Control | Collision channel used for snap traces.         |
+| **Show Snap Radius**      | Measurement Control | Debug spheres around each point (Surface Snap). |
 
 ### UMeasurementLabelComponent — Cumulative Labels
 
-| Property                     | Category                                | Description                                          |
-| ---------------------------- | --------------------------------------- | ---------------------------------------------------- |
-| **Show Cumulative Labels**   | Measurement Control \| Cumulative Labels | Display accumulated distance at each spline point.  |
-| **Label Size**               | Measurement Control \| Cumulative Labels | World-size of the cumulative label text.            |
-| **Label Color**              | Measurement Control \| Cumulative Labels | Color of the cumulative label text.                 |
+| Property                      | Category                                 | Description                                        |
+| ----------------------------- | ---------------------------------------- | -------------------------------------------------- |
+| **Show Cumulative Labels**    | Measurement Control \| Cumulative Labels | Display accumulated distance at each spline point. |
+| **Label Size**                | Measurement Control \| Cumulative Labels | World-size of the cumulative label text.           |
+| **Label Color**               | Measurement Control \| Cumulative Labels | Color of the cumulative label text.                |
 | **Cumulative Label Z Offset** | Measurement Control \| Cumulative Labels | Vertical offset above the spline point.            |
 
 ### UMeasurementLabelComponent — Angle Labels
 
-| Property                | Category                            | Description                                              |
-| ----------------------- | ----------------------------------- | -------------------------------------------------------- |
-| **Show Angle Labels**   | Measurement Control \| Angle Labels | Display angle between consecutive segments at each point.|
-| **Angle Label Size**    | Measurement Control \| Angle Labels | World-size of the angle label text.                      |
-| **Angle Label Color**   | Measurement Control \| Angle Labels | Color of the angle label text.                           |
-| **Angle Label Z Offset**| Measurement Control \| Angle Labels | Vertical offset above the spline point.                  |
-| **Show Angle Arcs**     | Measurement Control \| Angle Labels | Draw visual arcs showing the angle.                      |
-| **Angle Arc Radius**    | Measurement Control \| Angle Labels | Radius of the debug angle arc.                           |
-| **Angle Arc Color**     | Measurement Control \| Angle Labels | Color of the angle arc.                                  |
-| **Angle Arc Segments**  | Measurement Control \| Angle Labels | Number of line segments in the arc.                      |
+| Property                 | Category                            | Description                                               |
+| ------------------------ | ----------------------------------- | --------------------------------------------------------- |
+| **Show Angle Labels**    | Measurement Control \| Angle Labels | Display angle between consecutive segments at each point. |
+| **Angle Label Size**     | Measurement Control \| Angle Labels | World-size of the angle label text.                       |
+| **Angle Label Color**    | Measurement Control \| Angle Labels | Color of the angle label text.                            |
+| **Angle Label Z Offset** | Measurement Control \| Angle Labels | Vertical offset above the spline point.                   |
+| **Show Angle Arcs**      | Measurement Control \| Angle Labels | Draw visual arcs showing the angle.                       |
+| **Angle Arc Radius**     | Measurement Control \| Angle Labels | Radius of the debug angle arc.                            |
+| **Angle Arc Color**      | Measurement Control \| Angle Labels | Color of the angle arc.                                   |
+| **Angle Arc Segments**   | Measurement Control \| Angle Labels | Number of line segments in the arc.                       |
 
 ## Module Dependencies
 
 ### UnrealMeasurementTool (Runtime)
 
-| Type        | Modules                                            |
-| ----------- | -------------------------------------------------- |
-| **Public**  | Core, CoreUObject, Engine                          |
+| Type        | Modules                                              |
+| ----------- | ---------------------------------------------------- |
+| **Public**  | Core, CoreUObject, Engine                            |
 | **Private** | Slate, SlateCore, UMG, UnrealEd (editor builds only) |
 
 ### UnrealMeasurementToolEditor (Editor)
 
-| Type        | Modules                                                     |
-| ----------- | ----------------------------------------------------------- |
+| Type        | Modules                                                                     |
+| ----------- | --------------------------------------------------------------------------- |
 | **Public**  | Core, CoreUObject, Engine, UnrealEd, EditorFramework, UnrealMeasurementTool |
-| **Private** | Slate, SlateCore, InputCore, LevelEditor, PropertyEditor    |
+| **Private** | Slate, SlateCore, InputCore, LevelEditor, PropertyEditor                    |
 
 ## Building
 
